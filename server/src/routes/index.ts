@@ -1,9 +1,9 @@
 import { Router } from 'express'
 
-import { AuthController } from '../controllers/AuthController'
+import { SignUpController } from '../controllers/SignUpController'
 
 export const routes = Router()
 
-const authController = new AuthController()
+const signUpController = new SignUpController()
 
-routes.post('/sign_up', authController.signUp)
+routes.post('/sign_up', signUpController.handle)

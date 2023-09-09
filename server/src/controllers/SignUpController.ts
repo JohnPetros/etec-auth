@@ -2,8 +2,8 @@ import { Request, Response } from 'express'
 import { CreateUserUseCase } from '../useCases/CreateUser'
 import { UsersRepository } from '../repositories/UsersRepository'
 
-export class AuthController {
-  async signUp(request: Request, response: Response) {
+export class SignUpController {
+  async handle(request: Request, response: Response) {
     const { name, email, password, password_confirmation } = request.body
 
     const usersRepository = new UsersRepository()
