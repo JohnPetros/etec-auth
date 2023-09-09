@@ -12,22 +12,31 @@ export class UsersRepository implements IUsersRepository {
   }
 
   async findById(id: string): Promise<User | null> {
-    return await this.Model.findOne<User>({ id })
+    try {
+      return await this.Model.findOne<User>({ id })
+    } catch (error) {
+      console.error(error)
+      throw new AppError('Fail to find a user by email')
+    }
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return await this.Model.findOne<User>({ email })
+    try {
+      return await this.Model.findOne<User>({ email })
+    } catch (error) {
+      console.error(error)
+      throw new AppError('Fail to find a user by id')
+    }
   }
 
   async create({ name, email, password }: CreateUserDTO): Promise<User> {
-    const user = new this.Model({ name, email, password })
-
     try {
+      const user = new this.Model({ name, email, password })
       const createdUser = await user.save()
       return createdUser
     } catch (error) {
       console.error(error)
-      throw new AppError('Fail to create a user', 500)
+      throw new AppError('Fail to create a user')
     }
   }
 }
