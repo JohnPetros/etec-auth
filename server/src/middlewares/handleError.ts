@@ -6,7 +6,7 @@ export function handleError(
   request: Request,
   response: Response,
   next: NextFunction
-) {
+): Response {
   console.error(error.message)
 
   if (error instanceof AppError) {
