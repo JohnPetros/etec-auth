@@ -1,7 +1,7 @@
 import { IUsersRepository } from './interfaces/IUsersRepository'
+import { CreateUserDTO } from '../dtos/CreateUserDTO'
 import { User } from '../entities/User'
 import { UserModel } from '../models/UserModel'
-import { CreateUserDTO } from '../dtos/CreateUserDTO'
 import { AppError } from '../utils/AppError'
 
 export class UsersRepository implements IUsersRepository {
@@ -16,7 +16,7 @@ export class UsersRepository implements IUsersRepository {
       return await this.Model.findOne<User>({ id })
     } catch (error) {
       console.error(error)
-      throw new AppError('Fail to find a user by email')
+      throw new AppError('Failed to find a user by email')
     }
   }
 
@@ -25,7 +25,7 @@ export class UsersRepository implements IUsersRepository {
       return await this.Model.findOne<User>({ email })
     } catch (error) {
       console.error(error)
-      throw new AppError('Fail to find a user by id')
+      throw new AppError('Failed to find a user by id')
     }
   }
 
@@ -36,7 +36,7 @@ export class UsersRepository implements IUsersRepository {
       return createdUser
     } catch (error) {
       console.error(error)
-      throw new AppError('Fail to create a user')
+      throw new AppError('Failed to create a user')
     }
   }
 }
