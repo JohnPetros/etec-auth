@@ -1,6 +1,7 @@
 import { User } from '../entities/User'
 import { IUsersRepository } from '../repositories/interfaces/IUsersRepository'
 import { AppError } from '../utils/AppError'
+import { Validator } from '../utils/Validator'
 
 interface Request {
   name: string
@@ -18,6 +19,17 @@ export class CreateUserUseCase {
     password,
     password_confirmation,
   }: Request): Promise<User> {
+    const validator = new Validator()
+
+    const errors = validator.validateSignUpUser({
+      name,
+      email,
+      password,
+      password_confirmation,
+    })
+
+    console.log(errors)
+
     const userAlreadyExists = await this.usersRepository.findByEmail(email)
 
     if (userAlreadyExists) {
