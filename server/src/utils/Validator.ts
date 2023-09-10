@@ -8,12 +8,12 @@ export class Validator {
   private signUpUserSchema = z
     .object({
       name: z.string().min(3),
-      email: z.string().email('E-mail está formato incorreto'),
+      email: z.string().email('E-mail está no formato incorreto'),
       password: z
         .string()
         .refine(
           (password) => this.passwordRegex.test(password),
-          'Senha está formato incorreto'
+          'Senha está no formato incorreto'
         ),
       password_confirmation: z.string(),
     })

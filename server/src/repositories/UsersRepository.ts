@@ -5,15 +5,15 @@ import { UserModel } from '../models/UserModel'
 import { AppError } from '../utils/AppError'
 
 export class UsersRepository implements IUsersRepository {
-  private Model: typeof UserModel
+  private Repository: typeof UserModel
 
   constructor() {
-    this.Model = UserModel
+    this.Repository = UserModel
   }
 
   async findById(id: string): Promise<User | null> {
     try {
-      return await this.Model.findOne<User>({ id })
+      return await this.Repository.findOne<User>({ id })
     } catch (error) {
       console.error(error)
       throw new AppError('Failed to find a user by email')
@@ -22,7 +22,7 @@ export class UsersRepository implements IUsersRepository {
 
   async findByEmail(email: string): Promise<User | null> {
     try {
-      return await this.Model.findOne<User>({ email })
+      return await this.Repository.findOne<User>({ email })
     } catch (error) {
       console.error(error)
       throw new AppError('Failed to find a user by id')
@@ -31,7 +31,7 @@ export class UsersRepository implements IUsersRepository {
 
   async create({ name, email, password }: CreateUserDTO): Promise<User> {
     try {
-      const user = new this.Model({ name, email, password })
+      const user = new this.Repository({ name, email, password })
       const createdUser = await user.save()
       return createdUser
     } catch (error) {

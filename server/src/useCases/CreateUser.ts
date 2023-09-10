@@ -2,6 +2,7 @@ import { User } from '../entities/User'
 import { IUsersRepository } from '../repositories/interfaces/IUsersRepository'
 import { AppError } from '../utils/AppError'
 import { Validator } from '../utils/Validator'
+import { hash } from 'bcrypt'
 
 interface Request {
   name: string
@@ -28,18 +29,18 @@ export class CreateUserUseCase {
       password_confirmation,
     })
 
-    console.log(errors)
-
     const userAlreadyExists = await this.usersRepository.findByEmail(email)
 
     if (userAlreadyExists) {
       throw new AppError('Email already in use', 409)
     }
 
+    const passwordHash = await hash(password, 8)
+
     const createdUser = await this.usersRepository.create({
       name,
       email,
-      password,
+      password: passwordHash,
     })
 
     return createdUser
