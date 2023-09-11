@@ -35,14 +35,14 @@ export class AuthenticateUserUseCase {
       throw new AppError('User not found', 404)
     }
 
-    const secret = process.env.SECRET
+    const secretToken = process.env.SECRET_TOKEN
 
-    if (!secret) {
-      throw new AppError('Secret is missing', 500)
+    if (!secretToken) {
+      throw new AppError('Secret token is missing', 500)
     }
 
-    const token = sign({}, secret, {
-      subject: user._id.toString(),
+    const token = sign({}, secretToken, {
+      subject: user.email,
       expiresIn: '1d',
     })
 

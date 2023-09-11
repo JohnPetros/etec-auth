@@ -1,8 +1,10 @@
+import { User } from '../entities/User'
 import { IUsersRepository } from './interfaces/IUsersRepository'
 import { CreateUserDTO } from '../dtos/CreateUserDTO'
-import { User } from '../entities/User'
 import { UserModel } from '../models/UserModel'
+
 import { AppError } from '../utils/AppError'
+import { v4 as uuid } from 'uuid'
 
 export class UsersRepository implements IUsersRepository {
   private Repository: typeof UserModel

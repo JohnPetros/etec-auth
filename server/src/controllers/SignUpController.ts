@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { CreateUserUseCase } from '../useCases/CreateUser'
+import { CreateUserUseCase } from '../useCases/CreateUserUseCase'
 import { UsersRepository } from '../repositories/UsersRepository'
 
 export class SignUpController {

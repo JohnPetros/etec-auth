@@ -3,7 +3,7 @@ import { User } from '../entities/User'
 import normalize from 'normalize-mongoose'
 
 const UserSchema = new Schema<User>({
-  _id: {
+  id: {
     type: String,
     index: true,
   },
@@ -24,5 +24,13 @@ const UserSchema = new Schema<User>({
 })
 
 UserSchema.plugin(normalize)
+
+UserSchema.set('toObject', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+  },
+})
 
 export const UserModel: Model<User> = model('user', UserSchema)
