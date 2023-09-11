@@ -3,7 +3,7 @@ import { User } from '../entities/User'
 import normalize from 'normalize-mongoose'
 
 const UserSchema = new Schema<User>({
-  id: {
+  _id: {
     type: String,
     index: true,
   },
