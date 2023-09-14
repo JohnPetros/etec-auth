@@ -3,9 +3,10 @@ import { Button as ButtonContainer, ButtonText } from '@gluestack-ui/themed'
 interface ButtonProps {
   title: string
   isLink?: boolean
+  onPress: VoidFunction
 }
 
-export function Button({ title, isLink = false }: ButtonProps) {
+export function Button({ title, isLink = false, onPress }: ButtonProps) {
   return (
     <ButtonContainer
       borderWidth={isLink ? 0 : 2}
@@ -20,6 +21,7 @@ export function Button({ title, isLink = false }: ButtonProps) {
           opacity: 0.8,
         },
       }}
+      onPress={onPress}
     >
       <ButtonText>{title}</ButtonText>
     </ButtonContainer>
