@@ -1,9 +1,19 @@
+import { useRef } from 'react'
 import { Box, Center, Heading, VStack } from '@gluestack-ui/themed'
 import { Logo } from './Logo'
 import { Input } from './Input'
 import { Button } from './Button'
+import { SignInForm, SignInFormRef } from './SignInForm'
 
 export function SignUpForm() {
+  const signInFormRef = useRef<SignInFormRef>(null)
+
+  function handleSignUp() {}
+
+  function handleSignInForm() {
+    signInFormRef.current?.expand()
+  }
+
   return (
     <Box bg="$blue900" p={24}>
       <Center h="$full" w="$full">
@@ -29,13 +39,19 @@ export function SignUpForm() {
         </VStack>
 
         <Box mt={32} w="$full">
-          <Button title="Criar conta" />
+          <Button title="Criar conta" onPress={handleSignUp} />
         </Box>
 
         <Box mt={12} w="$full">
-          <Button title="Fazer login" isLink={true} />
+          <Button
+            title="Fazer login"
+            isLink={true}
+            onPress={handleSignInForm}
+          />
         </Box>
       </Center>
+
+      <SignInForm ref={signInFormRef} />
     </Box>
   )
 }
