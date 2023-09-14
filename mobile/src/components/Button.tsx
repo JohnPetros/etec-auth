@@ -10,8 +10,10 @@ export function Button({ title, isLink = false }: ButtonProps) {
     <ButtonContainer
       borderWidth={isLink ? 0 : 2}
       borderBlockColor={isLink ? '' : ''}
-      bg={isLink ? '$blue300' : 'none'}
+      bg={isLink ? '' : '$blue700'}
       rounded="$md"
+      p={8}
+      h="auto"
       sx={{
         ':active': {
           bg: isLink ? 'none' : '$blue600',

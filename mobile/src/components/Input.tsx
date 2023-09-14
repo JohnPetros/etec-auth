@@ -20,7 +20,7 @@ export function Input({ type, label, placeholder }: InputProps) {
       </FormControlLabel>
       <InputContainer>
         <InputField
-          borderWidth={1}
+          borderWidth={2}
           borderColor="$blue700"
           placeholder={placeholder}
           placeholderTextColor="$blue900"
