@@ -18,7 +18,7 @@ export function Input({ type, label, placeholder }: InputProps) {
       <FormControlLabel>
         <FormControlLabelText color="$light100">{label}</FormControlLabelText>
       </FormControlLabel>
-      <InputContainer>
+      <InputContainer h={48}>
         <InputField
           borderWidth={2}
           borderColor="$blue700"
@@ -27,7 +27,6 @@ export function Input({ type, label, placeholder }: InputProps) {
           fontSize="$md"
           bg="$light100"
           h="$full"
-          w="$full"
           autoCapitalize="none"
           secureTextEntry={type === 'password'}
           inputMode={type === 'email' ? type : 'text'}
