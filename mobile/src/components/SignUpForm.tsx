@@ -51,7 +51,7 @@ export function SignUpForm() {
             fontFamily="$heading"
             textTransform="uppercase"
           >
-            Crie sua Login
+            Crie sua conta
           </Heading>
 
           <VStack gap={12} w="$full">
