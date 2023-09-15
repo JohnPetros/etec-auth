@@ -1,41 +1,46 @@
 import { useRef } from 'react'
+import { Keyboard } from 'react-native'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { Box, Center, Heading, VStack } from '@gluestack-ui/themed'
+import { Box, Center, Heading, VStack, useToast } from '@gluestack-ui/themed'
 import { Logo } from './Logo'
 import { Input } from './Input'
 import { Button } from './Button'
+import { Toast } from './Toast'
 import { SignInForm, SignInFormRef } from './SignInForm'
 
 import { z } from 'zod'
 
 import { PASSWORD_REGEX } from '../constants/password-regex'
-import { Keyboard } from 'react-native'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 
-import { API_URL } from '@env'
+import { ApiResponse } from '../types/apiResponse'
+import { api } from '../services/api'
+import axios from 'axios'
 
 const signUpFormSchema = z
   .object({
     name: z
       .string({
-        required_error: 'Insira um nome de usuário'
+        required_error: 'Insira um nome de usuário',
       })
       .min(3, 'Nome de usuário deve ter pelo menos 3 caracteres'),
-    email: z.string({
-      required_error: 'Insira um e-mail'
-    }).email('E-mail está no formato incorreto'),
+    email: z
+      .string({
+        required_error: 'Insira um e-mail',
+      })
+      .email('E-mail está no formato incorreto'),
     password: z
       .string({
-        required_error: 'Insira uma senha'
+        required_error: 'Insira uma senha',
       })
-      .refine(
-        (password) => PASSWORD_REGEX.test(password),
+      .regex(
+        PASSWORD_REGEX,
         'Senha deve ter pelo menos 6 caracteres, sendo 1 caractere especial, 1 minúscula e 1 maiúscula e 1 número'
       ),
     password_confirmation: z.string({
-      required_error: 'Confirme sua senha'
+      required_error: 'Confirme sua senha',
     }),
   })
   .refine(
@@ -56,29 +61,47 @@ export function SignUpForm() {
 
   const signInFormRef = useRef<SignInFormRef>(null)
 
+  const toast = useToast()
+
   async function handleSignUp({
     name,
     email,
     password,
     password_confirmation,
   }: SignUpFormData) {
-    const response = await fetch(`${API_URL}/auth/sign_up`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+    try {
+      const { data } = await api.post<ApiResponse>('auth/sign_up', {
         name,
         email,
         password,
         password_confirmation,
-      }),
-    })
+      })
 
-    const data = await response.json()
+      console.log({ data })
 
-    console.log(data)
+      if (data.user) {
+        return toast.show({
+          placement: 'top',
+          render: () => <Toast type="success" message={data.errorMessage[0]} />,
+        })
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const { errorMessage } = error.response?.data
+        if (Array.isArray(errorMessage)) {
+          errorMessage.forEach((message) => {
+            toast.show({
+              placement: 'top',
+              render: () => <Toast type="error" message={message} />,
+            })
+          })
+        }
+        toast.show({
+          placement: 'top',
+          render: () => <Toast type="error" message={errorMessage} />,
+        })
+      }
+    }
   }
 
   function handleSignInForm() {
@@ -106,7 +129,7 @@ export function SignUpForm() {
               name="name"
               render={({ field: { onChange, value } }) => (
                 <Input
-                  type="email"
+                  type="text"
                   label="Nome"
                   placeholder="Nome de usuário"
                   value={value}
