@@ -24,7 +24,8 @@
     "react-native-reanimated": "~3.3.0",
     "react-native-svg": "^13.4.0",
     "react-native-toast-notifications": "^3.4.0",
-    "zod": "^3.22.2"
+    "zod": "^3.22.2",
+    "@react-native-async-storage/async-storage": "1.18.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
