@@ -15,10 +15,7 @@ export default function App() {
           translucent
         />
 
-        <ToastProvider duration={3000} textStyle={{ fontSize: 20 }}  swipeEnabled={true}>
-          <SignUpForm />
-        </ToastProvider>
-
+        <SignUpForm />
       </GestureHandlerRootView>
     </GluestackUIProvider>
   )
