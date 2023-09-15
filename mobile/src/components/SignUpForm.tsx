@@ -1,23 +1,20 @@
 import { useRef } from 'react'
+import { useAuth } from '../hooks/useAuth'
+import { useForm, Controller } from 'react-hook-form'
+
 import { Keyboard } from 'react-native'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
-import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { Box, Center, Heading, VStack, useToast } from '@gluestack-ui/themed'
+import { Box, Center, Heading, VStack } from '@gluestack-ui/themed'
 import { Logo } from './Logo'
 import { Input } from './Input'
 import { Button } from './Button'
-import { Toast } from './Toast'
 import { SignInForm, SignInFormRef } from './SignInForm'
 
 import { z } from 'zod'
 
 import { PASSWORD_REGEX } from '../constants/password-regex'
-
-import { ApiResponse } from '../types/apiResponse'
-import { api } from '../services/api'
-import axios from 'axios'
 
 const signUpFormSchema = z
   .object({
@@ -59,9 +56,9 @@ export function SignUpForm() {
     resolver: zodResolver(signUpFormSchema),
   })
 
-  const signInFormRef = useRef<SignInFormRef>(null)
+  const { signUp, isLoading } = useAuth()
 
-  const toast = useToast()
+  const signInFormRef = useRef<SignInFormRef>(null)
 
   async function handleSignUp({
     name,
@@ -69,39 +66,7 @@ export function SignUpForm() {
     password,
     password_confirmation,
   }: SignUpFormData) {
-    try {
-      const { data } = await api.post<ApiResponse>('auth/sign_up', {
-        name,
-        email,
-        password,
-        password_confirmation,
-      })
-
-      console.log({ data })
-
-      if (data.user) {
-        return toast.show({
-          placement: 'top',
-          render: () => <Toast type="success" message={data.errorMessage[0]} />,
-        })
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const { errorMessage } = error.response?.data
-        if (Array.isArray(errorMessage)) {
-          errorMessage.forEach((message) => {
-            toast.show({
-              placement: 'top',
-              render: () => <Toast type="error" message={message} />,
-            })
-          })
-        }
-        toast.show({
-          placement: 'top',
-          render: () => <Toast type="error" message={errorMessage} />,
-        })
-      }
-    }
+    signUp({ name, email, password, password_confirmation })
   }
 
   function handleSignInForm() {
@@ -186,7 +151,11 @@ export function SignUpForm() {
           </VStack>
 
           <Box mt={32} w="$full">
-            <Button title="Criar conta" onPress={handleSubmit(handleSignUp)} />
+            <Button
+              title="Criar conta"
+              onPress={handleSubmit(handleSignUp)}
+              isLoading={isLoading}
+            />
           </Box>
 
           <Box mt={12} w="$full">
