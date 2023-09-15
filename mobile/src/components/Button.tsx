@@ -1,12 +1,22 @@
-import { Button as ButtonContainer, ButtonText } from '@gluestack-ui/themed'
+import {
+  Button as ButtonContainer,
+  ButtonSpinner,
+  ButtonText,
+} from '@gluestack-ui/themed'
 
 interface ButtonProps {
   title: string
   isLink?: boolean
   onPress: VoidFunction
+  isLoading?: boolean
 }
 
-export function Button({ title, isLink = false, onPress }: ButtonProps) {
+export function Button({
+  title,
+  isLink = false,
+  onPress,
+  isLoading = false,
+}: ButtonProps) {
   return (
     <ButtonContainer
       borderWidth={isLink ? 0 : 2}
@@ -23,7 +33,7 @@ export function Button({ title, isLink = false, onPress }: ButtonProps) {
       }}
       onPress={onPress}
     >
-      <ButtonText>{title}</ButtonText>
+      {isLoading ? <ButtonSpinner /> : <ButtonText>{title}</ButtonText>}
     </ButtonContainer>
   )
 }
