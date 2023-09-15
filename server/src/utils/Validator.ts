@@ -5,10 +5,16 @@ export class Validator {
   private readonly passwordRegex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s])[A-Za-z\d\W\S]{6,}$/g
 
-  private emailSchema = z.string().email('E-mail está no formato incorreto')
+  private emailSchema = z
+    .string({
+      required_error: 'Insira uma senha'
+    })  
+    .email('E-mail está no formato incorreto')
 
   private passwordShema = z
-    .string()
+    .string({
+      required_error: 'Insira uma senha'
+    })
     .refine(
       (password) => this.passwordRegex.test(password),
       'Senha está no formato incorreto'
@@ -21,10 +27,17 @@ export class Validator {
 
   private signUpUserSchema = z
     .object({
-      name: z.string().min(3),
+      name: z
+        .string({
+          required_error: 'Insira um nome de usuário'
+        })
+        
+        .min(3, 'Nome de usuário deve ter pelo menos 3 caracteres'),
       email: this.emailSchema,
       password: this.passwordShema,
-      password_confirmation: z.string(),
+      password_confirmation: z.string({
+        required_error: 'Confirme sua senha'
+      })
     })
     .refine(
       ({ password, password_confirmation }) =>
