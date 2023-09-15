@@ -13,7 +13,7 @@ export function Toast({ type, message }: ToastProps) {
       justifyContent="center"
     >
       <Box
-        rounded={12}
+        rounded={8}
         borderLeftWidth={12}
         borderColor={type === 'success' ? '$green500' : '$red500'}
         bg={'$light100'}
