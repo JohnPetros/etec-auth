@@ -1,12 +1,21 @@
-import { ForwardedRef, forwardRef, useImperativeHandle, useRef } from 'react'
+import {
+  ForwardedRef,
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { SignUpFormData, signInFormSchema } from '../libs/zod'
+import { SignInFormData, SignUpFormData, signInFormSchema } from '../libs/zod'
 
 import { Box, Center, Heading, VStack } from '@gluestack-ui/themed'
 import { Input } from './Input'
 import { Button } from './Button'
 import BottomSheet from '@gorhom/bottom-sheet'
+import { Keyboard } from 'react-native'
+import { useAuth } from '../hooks/useAuth'
 
 export interface SignInFormRef {
   expand: VoidFunction
@@ -23,6 +32,8 @@ export function SignInFormComponent(_: any, ref: ForwardedRef<SignInFormRef>) {
     resolver: zodResolver(signInFormSchema),
   })
 
+  const { signIn, isLoading } = useAuth()
+
   const bottomSheetRef = useRef<BottomSheet>(null)
 
   function expand() {
@@ -37,7 +48,9 @@ export function SignInFormComponent(_: any, ref: ForwardedRef<SignInFormRef>) {
     bottomSheetRef.current?.close()
   }
 
-  function handleLogin() {}
+  function handleSignIn({ email, password }: SignInFormData) {
+    signIn({ email, password })
+  }
 
   useImperativeHandle(ref, () => {
     return {
@@ -50,7 +63,7 @@ export function SignInFormComponent(_: any, ref: ForwardedRef<SignInFormRef>) {
   return (
     <BottomSheet
       ref={bottomSheetRef}
-      snapPoints={[40, '75%']}
+      snapPoints={[40, '100%']}
       backgroundStyle={{ backgroundColor: '#' }}
       handleIndicatorStyle={{ backgroundColor: '#' }}
       enablePanDownToClose={false}
@@ -94,7 +107,7 @@ export function SignInFormComponent(_: any, ref: ForwardedRef<SignInFormRef>) {
 
             <Controller
               control={control}
-              name="password_confirmation"
+              name="password"
               render={({ field: { onChange, value } }) => (
                 <Input
                   type="password"
@@ -109,7 +122,11 @@ export function SignInFormComponent(_: any, ref: ForwardedRef<SignInFormRef>) {
           </VStack>
 
           <Box mt={24} w="$full">
-            <Button title="Login" onPress={handleLogin} />
+            <Button
+              title="Fazer login"
+              onPress={handleSubmit(handleSignIn)}
+              isLoading={isLoading}
+            />
           </Box>
 
           <Box mt={16} w="$full">

@@ -14,10 +14,8 @@ export interface SignUpProps {
 }
 
 interface SignInProps {
-  name: string
   email: string
   password: string
-  password_confirmation: string
 }
 
 type AuthContextValue = {
@@ -76,7 +74,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-  async function signIn({ email, password }: SignUpProps) {
+  async function signIn({ email, password }: SignInProps) {
     setIsLoading(true)
 
     try {
@@ -86,6 +84,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         email,
         password,
       })
+
+      console.log(user)
 
       setUser(user)
     } catch (error) {
