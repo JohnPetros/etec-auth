@@ -1,8 +1,8 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { Box, Center, Heading, VStack } from '@gluestack-ui/themed'
+import { Box, Center, FormControl, Heading, VStack } from '@gluestack-ui/themed'
 import { Logo } from './Logo'
 import { Input } from './Input'
 import { Button } from './Button'
@@ -12,6 +12,7 @@ import { z } from 'zod'
 
 import { PASSWORD_REGEX } from '../constants/password-regex'
 import { Keyboard } from 'react-native'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 
 const signUpFormSchema = z
   .object({
@@ -53,110 +54,97 @@ export function SignUpForm() {
     signInFormRef.current?.expand()
   }
 
-  // function handleKeyboardShow() {
-  //   signInFormRef.current?.close()
-
-  // }
-
-  // useEffect(() => {
-  //   Keyboard.addListener('keyboardDidShow', handleKeyboardShow)
-  //   Keyboard.addListener('keyboardDidHide', showHeader);
-
-  //   return () => {
-  //     Keyboard.removeAllListeners('keyboardDidShow');
-  //     Keyboard.removeAllListeners('keyboardDidHide');
-  //   }
-  // }, [])
-
   return (
-    <Box bg="$blue900" p={24}>
-      <Center h="$full" w="$full">
-        <Logo />
-        <Heading
-          mt={24}
-          color="$light100"
-          fontSize="$2xl"
-          textTransform="uppercase"
-        >
-          Crie sua Login
-        </Heading>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <Box bg="$blue900" p={24}>
+        <Center h="$full" w="$full">
+          <Logo />
+          <Heading
+            mt={24}
+            color="$light100"
+            fontSize="$2xl"
+            textTransform="uppercase"
+          >
+            Crie sua Login
+          </Heading>
 
-        <VStack gap={12} w="$full">
-          <Controller
-            control={control}
-            name="name"
-            render={({ field: { onChange, value } }) => (
-              <Input
-                type="email"
-                label="Nome"
-                placeholder="John Petros"
-                value={value}
-                errorMessage={errors.name?.message}
-                onChange={onChange}
-              />
-            )}
-          />
+          <VStack gap={12} w="$full">
+            <Controller
+              control={control}
+              name="name"
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  type="email"
+                  label="Nome"
+                  placeholder="John Petros"
+                  value={value}
+                  errorMessage={errors.name?.message}
+                  onChange={onChange}
+                />
+              )}
+            />
 
-          <Controller
-            control={control}
-            name="email"
-            render={({ field: { onChange, value } }) => (
-              <Input
-                type="email"
-                label="E-mail"
-                placeholder="seu@etec.com.br"
-                value={value}
-                onChange={onChange}
-                errorMessage={errors.email?.message}
-              />
-            )}
-          />
+            <Controller
+              control={control}
+              name="email"
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  type="email"
+                  label="E-mail"
+                  placeholder="seu@etec.com.br"
+                  value={value}
+                  onChange={onChange}
+                  errorMessage={errors.email?.message}
+                />
+              )}
+            />
 
-          <Controller
-            control={control}
-            name="password"
-            render={({ field: { onChange, value } }) => (
-              <Input
-                type="password"
-                label="Senha"
-                placeholder="sua senha"
-                value={value}
-                errorMessage={errors.password?.message}
-                onChange={onChange}
-              />
-            )}
-          />
+            <Controller
+              control={control}
+              name="password"
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  type="password"
+                  label="Senha"
+                  placeholder="sua senha"
+                  value={value}
+                  errorMessage={errors.password?.message}
+                  onChange={onChange}
+                />
+              )}
+            />
 
-          <Controller
-            control={control}
-            name="password_confirmation"
-            render={({ field: { onChange, value } }) => (
-              <Input
-                type="password"
-                label="Confirmação de senha"
-                placeholder="confirme sua senha"
-                value={value}
-                errorMessage={errors.password_confirmation?.message}
-                onChange={onChange}
-              />
-            )}
-          />
-        </VStack>
+            <Controller
+              control={control}
+              name="password_confirmation"
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  type="password"
+                  label="Confirmação de senha"
+                  placeholder="confirme sua senha"
+                  value={value}
+                  errorMessage={errors.password_confirmation?.message}
+                  onChange={onChange}
+                />
+              )}
+            />
+          </VStack>
 
-        <Box mt={32} w="$full">
-          <Button title="Criar conta" onPress={handleSubmit(handleSignUp)} />
-        </Box>
+          <Box mt={32} w="$full">
+            <Button title="Criar conta" onPress={handleSubmit(handleSignUp)} />
+          </Box>
 
-        <Box mt={12} w="$full">
-          <Button
-            title="Fazer login"
-            isLink={true}
-            onPress={handleSignInForm}
-          />
-        </Box>
-      </Center>
+          <Box mt={12} w="$full">
+            <Button
+              title="Fazer login"
+              isLink={true}
+              onPress={handleSignInForm}
+            />
+          </Box>
+        </Center>
 
-      <SignInForm ref={signInFormRef} />
-    </Box>
+        <SignInForm ref={signInFormRef} />
+      </Box>
+    </TouchableWithoutFeedback>
   )
 }
