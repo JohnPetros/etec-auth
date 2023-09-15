@@ -1,9 +1,9 @@
 import { StatusBar } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
-import { Box, GluestackUIProvider } from '@gluestack-ui/themed'
+import { GluestackUIProvider } from '@gluestack-ui/themed'
 
-import { SignInForm } from './src/components/SignInForm'
 import { SignUpForm } from './src/components/SignUpForm'
+import { ToastProvider } from 'react-native-toast-notifications'
 
 export default function App() {
   return (
@@ -15,7 +15,9 @@ export default function App() {
           translucent
         />
 
-        <SignUpForm />
+        <ToastProvider duration={3000} textStyle={{ fontSize: 20 }}  swipeEnabled={true}>
+          <SignUpForm />
+        </ToastProvider>
 
       </GestureHandlerRootView>
     </GluestackUIProvider>
