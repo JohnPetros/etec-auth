@@ -1,10 +1,11 @@
 import { ForwardedRef, forwardRef, useImperativeHandle, useRef } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { SignUpFormData, signInFormSchema } from '../libs/zod'
 
 import { Box, Center, Heading, VStack } from '@gluestack-ui/themed'
 import { Input } from './Input'
 import { Button } from './Button'
-
 import BottomSheet from '@gorhom/bottom-sheet'
 
 export interface SignInFormRef {
@@ -14,7 +15,13 @@ export interface SignInFormRef {
 }
 
 export function SignInFormComponent(_: any, ref: ForwardedRef<SignInFormRef>) {
-  const { control } = useForm()
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpFormData>({
+    resolver: zodResolver(signInFormSchema),
+  })
 
   const bottomSheetRef = useRef<BottomSheet>(null)
 
@@ -80,6 +87,7 @@ export function SignInFormComponent(_: any, ref: ForwardedRef<SignInFormRef>) {
                   placeholder="seu@etec.com.br"
                   value={value}
                   onChange={onChange}
+                  errorMessage={errors.email?.message}
                 />
               )}
             />
@@ -94,6 +102,7 @@ export function SignInFormComponent(_: any, ref: ForwardedRef<SignInFormRef>) {
                   placeholder="confirme sua senha"
                   value={value}
                   onChange={onChange}
+                  errorMessage={errors.password?.message}
                 />
               )}
             />

@@ -1,10 +1,11 @@
 import { useRef } from 'react'
 import { useAuth } from '../hooks/useAuth'
-import { useForm, Controller } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { SignUpFormData, signInFormSchema } from '../libs/zod'
 
 import { Keyboard } from 'react-native'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
-import { zodResolver } from '@hookform/resolvers/zod'
 
 import { Box, Center, Heading, VStack } from '@gluestack-ui/themed'
 import { Logo } from './Logo'
@@ -12,48 +13,13 @@ import { Input } from './Input'
 import { Button } from './Button'
 import { SignInForm, SignInFormRef } from './SignInForm'
 
-import { z } from 'zod'
-
-import { PASSWORD_REGEX } from '../constants/password-regex'
-
-const signUpFormSchema = z
-  .object({
-    name: z
-      .string({
-        required_error: 'Insira um nome de usuário',
-      })
-      .min(3, 'Nome de usuário deve ter pelo menos 3 caracteres'),
-    email: z
-      .string({
-        required_error: 'Insira um e-mail',
-      })
-      .email('E-mail está no formato incorreto'),
-    password: z
-      .string({
-        required_error: 'Insira uma senha',
-      })
-      .regex(
-        PASSWORD_REGEX,
-        'Senha deve ter pelo menos 6 caracteres, sendo 1 caractere especial, 1 minúscula e 1 maiúscula e 1 número'
-      ),
-    password_confirmation: z.string({
-      required_error: 'Confirme sua senha',
-    }),
-  })
-  .refine(
-    ({ password, password_confirmation }) => password === password_confirmation,
-    'Senhas não conferem'
-  )
-
-type SignUpFormData = z.infer<typeof signUpFormSchema>
-
 export function SignUpForm() {
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<SignUpFormData>({
-    resolver: zodResolver(signUpFormSchema),
+    resolver: zodResolver(signInFormSchema),
   })
 
   const { signUp, isLoading } = useAuth()
