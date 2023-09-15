@@ -1,6 +1,6 @@
-import { User } from "./user"
+import { User } from './user'
 
 export type ApiResponse = {
   user: User
-  errorMessage: string
+  errorMessage: string | string[]
 }
