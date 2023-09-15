@@ -7,7 +7,11 @@ interface ToastProps {
 
 export function Toast({ type, message }: ToastProps) {
   return (
-    <ToastContainer>
+    <ToastContainer
+      style={{ backgroundColor: 'transparent' }}
+      shadowColor="transparent"
+      justifyContent="center"
+    >
       <Box
         rounded={12}
         borderLeftWidth={12}
@@ -18,8 +22,9 @@ export function Toast({ type, message }: ToastProps) {
         justifyContent="center"
         p={12}
         zIndex={50}
+        w={'90%'}
       >
-        <ToastTitle color="$gray900" fontSize={16}>
+        <ToastTitle color="#000" fontSize={16}>
           {message}
         </ToastTitle>
       </Box>
