@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useState } from 'react'
+import { ReactNode, createContext } from 'react'
 import { Toast } from '../components/Toast'
 import { useToast } from '@gluestack-ui/themed'
 
