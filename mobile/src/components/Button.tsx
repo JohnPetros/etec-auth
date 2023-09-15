@@ -32,6 +32,7 @@ export function Button({
         },
       }}
       onPress={onPress}
+      disabled={isLoading}
     >
       {isLoading ? <ButtonSpinner /> : <ButtonText>{title}</ButtonText>}
     </ButtonContainer>
