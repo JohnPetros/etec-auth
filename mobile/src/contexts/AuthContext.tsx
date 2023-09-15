@@ -6,7 +6,14 @@ import { api, getApiErrorMessage } from '../services/api'
 import type { ApiResponse } from '../types/apiResponse'
 import type { User } from '../types/user'
 
-interface SignUpProps {
+export interface SignUpProps {
+  name: string
+  email: string
+  password: string
+  password_confirmation: string
+}
+
+interface SignInProps {
   name: string
   email: string
   password: string
@@ -16,6 +23,7 @@ interface SignUpProps {
 type AuthContextValue = {
   user: User | null
   signUp: ({}: SignUpProps) => void
+  signIn: ({}: SignInProps) => void
   isLoading: boolean
 }
 
@@ -30,6 +38,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoading, setIsLoading] = useState(false)
   const toast = useToast()
 
+  function handleError(error: unknown) {
+    const errorMessage = getApiErrorMessage(error)
+
+    if (Array.isArray(errorMessage)) {
+      errorMessage.forEach((message) => {
+        toast.show({ type: 'error', message })
+      })
+    }
+
+    toast.show({ type: 'error', message: errorMessage })
+  }
+
   async function signUp({
     name,
     email,
@@ -39,31 +59,44 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setIsLoading(true)
 
     try {
-      const { data } = await api.post<ApiResponse>('auth/sign_up', {
+      const {
+        data: { user },
+      } = await api.post<ApiResponse>('auth/sign_up', {
         name,
         email,
         password,
         password_confirmation,
       })
 
-      setUser(data.user)
+      setUser(user)
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
+      handleError(error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
-      if (Array.isArray(errorMessage)) {
-        errorMessage.forEach((message) => {
-          toast.show({ type: 'error', message })
-        })
-      }
+  async function signIn({ email, password }: SignUpProps) {
+    setIsLoading(true)
 
-      toast.show({ type: 'error', message: errorMessage })
+    try {
+      const {
+        data: { user },
+      } = await api.post<ApiResponse>('auth/sign_in', {
+        email,
+        password,
+      })
+
+      setUser(user)
+    } catch (error) {
+      handleError(error)
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <AuthContext.Provider value={{ user, signUp, isLoading }}>
+    <AuthContext.Provider value={{ user, signUp, signIn, isLoading }}>
       {children}
     </AuthContext.Provider>
   )
