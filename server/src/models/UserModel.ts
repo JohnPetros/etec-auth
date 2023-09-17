@@ -24,7 +24,7 @@ const UserSchema = new Schema<User>({
   },
 })
 
-// UserSchema.plugin(normalize)
+UserSchema.plugin(normalize)
 
 UserSchema.set('toObject', {
   virtuals: true
