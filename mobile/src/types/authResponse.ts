@@ -1,6 +1,7 @@
 import { User } from './user'
 
-export type ApiResponse = {
+export type AuthResponse = {
   user: User
+  token: string
   errorMessage: string | string[]
 }
