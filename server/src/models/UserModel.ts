@@ -15,6 +15,7 @@ const UserSchema = new Schema<User>({
     type: String,
     required: true,
     unique: true,
+    lowercase: true,
   },
   password: {
     type: String,
@@ -32,5 +33,8 @@ UserSchema.set('toObject', {
     delete returnedObject.__v
   },
 })
+
+
+
 
 export const UserModel: Model<User> = model('user', UserSchema)
