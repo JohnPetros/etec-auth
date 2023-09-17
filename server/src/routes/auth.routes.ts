@@ -10,3 +10,4 @@ const signInController = new SignInController()
 
 authRoutes.post('/sign_up', signUpController.handle)
 authRoutes.post('/sign_in', signInController.handle)
+authRoutes.post('/refresh_token', signInController.handle)
