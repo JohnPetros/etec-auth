@@ -1,10 +1,15 @@
 import { ReactNode, createContext, useState } from 'react'
 import { useToast } from '../hooks/useToast'
 
-import { api, getApiErrorMessage } from '../services/api'
+import {
+  addAuthorizationHeader,
+  api,
+  getApiErrorMessage,
+} from '../services/api'
 
-import type { ApiResponse } from '../types/apiResponse'
+import type { AuthResponse } from '../types/authResponse'
 import type { User } from '../types/user'
+import { storage } from '../storage'
 
 export interface SignUpProps {
   name: string
@@ -48,6 +53,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
     toast.show({ type: 'error', message: errorMessage })
   }
 
+  async function saveUserData(user: User, token: string) {
+    try {
+      await Promise.all([storage.saveUser(user), storage.saveToken(token)])
+      addAuthorizationHeader(token)
+    } catch (error) {
+      console.error(error)
+      toast.show({
+        type: 'error',
+        message: 'Error ao salvar informações de usuário',
+      })
+    }
+  }
+
   async function signUp({
     name,
     email,
@@ -58,15 +76,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     try {
       const {
-        data: { user },
-      } = await api.post<ApiResponse>('auth/sign_up', {
+        data: { user, token },
+      } = await api.post<AuthResponse>('auth/sign_up', {
         name,
         email,
         password,
         password_confirmation,
       })
 
-      setUser(user)
+      if (user && token) await saveUserData(user, token)
     } catch (error) {
       handleError(error)
     } finally {
@@ -79,15 +97,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     try {
       const {
-        data: { user },
-      } = await api.post<ApiResponse>('auth/sign_in', {
+        data: { user, token },
+      } = await api.post<AuthResponse>('auth/sign_in', {
         email,
         password,
       })
 
-      console.log(user)
+      console.log(token)
 
-      setUser(user)
+      if (user && token) await saveUserData(user, token)
     } catch (error) {
       handleError(error)
     } finally {
