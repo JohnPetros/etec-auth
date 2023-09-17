@@ -1,12 +1,11 @@
 import { Router } from 'express'
 
-import { SignUpController } from '../controllers/SignUpController'
-import { SignInController } from '../controllers/SignInController'
+import { authRoutes } from './auth.routes'
+import { coursesRoutes } from './courses.routes'
+import { subjectsRoutes } from './subjects.routes'
 
-export const routes = Router()
+export const router = Router()
 
-const signUpController = new SignUpController()
-const signInController = new SignInController()
-
-routes.post('/sign_up', signUpController.handle)
-routes.post('/sign_in', signInController.handle)
+router.use('/auth', authRoutes)
+router.use('/courses', coursesRoutes)
+router.use('/subjects', subjectsRoutes)
