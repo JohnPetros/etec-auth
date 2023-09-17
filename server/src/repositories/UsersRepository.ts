@@ -15,7 +15,18 @@ export class UsersRepository implements IUsersRepository {
 
   async findById(id: string): Promise<User | null> {
     try {
-      return await this.Repository.findOne<User>({ id })
+      const user = await this.Repository.findOne({ id })
+
+      if (!user) {
+        throw new AppError('Failed to find a user by id')
+      }
+
+      return {
+        id: user._id.toHexString(),
+        email: user?.email,
+        name: user?.name,
+        password: user?.password,
+      }
     } catch (error) {
       console.error(error)
       throw new AppError('Failed to find a user by email')
@@ -24,7 +35,18 @@ export class UsersRepository implements IUsersRepository {
 
   async findByEmail(email: string): Promise<User | null> {
     try {
-      return await this.Repository.findOne<User>({ email })
+      const user = await this.Repository.findOne({ email })
+
+      if (!user) {
+        throw new AppError('Failed to find a user by id')
+      }
+
+      return {
+        id: user._id.toHexString(),
+        email: user?.email,
+        name: user?.name,
+        password: user?.password,
+      }
     } catch (error) {
       console.error(error)
       throw new AppError('Failed to find a user by id')
