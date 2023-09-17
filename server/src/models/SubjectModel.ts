@@ -16,7 +16,7 @@ const SubjectSchema = new Schema<Subject>({
 SubjectSchema.plugin(normalize)
 
 SubjectSchema.set('toObject', {
-  transform: (document, returnedObject) => {
+  transform: (_, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
     delete returnedObject.__v

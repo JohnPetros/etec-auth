@@ -24,17 +24,18 @@ const UserSchema = new Schema<User>({
   },
 })
 
-UserSchema.plugin(normalize)
+// UserSchema.plugin(normalize)
 
 UserSchema.set('toObject', {
-  transform: (document, returnedObject) => {
+  virtuals: true
+});
+
+UserSchema.set('toObject', {
+  transform: (_, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
     delete returnedObject.__v
   },
 })
-
-
-
 
 export const UserModel: Model<User> = model('user', UserSchema)
