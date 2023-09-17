@@ -7,7 +7,7 @@ export default {
     await AsyncStorage.setItem(USER_KEY, JSON.stringify(user))
   },
 
-  async getUser(): Promise<string | undefined> {
+  async getUser(): Promise<User | undefined> {
     const user = await AsyncStorage.getItem(USER_KEY)
     if (user) return await JSON.parse(user)
   },

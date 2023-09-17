@@ -27,6 +27,7 @@ type AuthContextValue = {
   user: User | null
   signUp: ({}: SignUpProps) => void
   signIn: ({}: SignInProps) => void
+  loadUserData: () => void
   isLoading: boolean
 }
 
@@ -42,11 +43,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const toast = useToast()
 
   function handleError(error: unknown) {
+    console.error({ error })
+
     const errorMessage = getApiErrorMessage(error)
 
     if (Array.isArray(errorMessage)) {
       errorMessage.forEach((message) => {
-        toast.show({ type: 'error', message })
+        toast.show({
+          type: 'error',
+          message:
+            typeof message === 'string' ? message : 'Erro interno no sistema',
+        })
       })
     }
 
@@ -56,6 +63,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   async function saveUserData(user: User, token: string) {
     try {
       await Promise.all([storage.saveUser(user), storage.saveToken(token)])
+      setUser(user)
       addAuthorizationHeader(token)
     } catch (error) {
       console.error(error)
@@ -63,6 +71,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
         type: 'error',
         message: 'Error ao salvar informações de usuário',
       })
+    }
+  }
+
+  async function loadUserData() {
+    const user = await storage.getUser()
+    const token = await storage.getToken()
+
+    console.log(user)
+
+    if (user && token) {
+      saveUserData(user, token)
     }
   }
 
@@ -103,7 +122,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         password,
       })
 
-      console.log(token)
+      console.log({ token })
 
       if (user && token) await saveUserData(user, token)
     } catch (error) {
@@ -114,7 +133,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, signUp, signIn, isLoading }}>
+    <AuthContext.Provider
+      value={{ user, signUp, signIn, loadUserData, isLoading }}
+    >
       {children}
     </AuthContext.Provider>
   )
