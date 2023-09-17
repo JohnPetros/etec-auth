@@ -27,6 +27,7 @@ type AuthContextValue = {
   user: User | null
   signUp: ({}: SignUpProps) => void
   signIn: ({}: SignInProps) => void
+  signOut: () => void
   loadUserData: () => void
   isLoading: boolean
 }
@@ -43,21 +44,34 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const toast = useToast()
 
   function handleError(error: unknown) {
-    console.error({ error })
+    console.error(error)
 
     const errorMessage = getApiErrorMessage(error)
+    const errorFallback = 'Erro interno no sistema'
 
     if (Array.isArray(errorMessage)) {
       errorMessage.forEach((message) => {
         toast.show({
           type: 'error',
-          message:
-            typeof message === 'string' ? message : 'Erro interno no sistema',
+          message: errorMessage ?? errorFallback,
         })
       })
     }
 
-    toast.show({ type: 'error', message: errorMessage })
+    toast.show({ type: 'error', message: errorMessage ?? errorFallback })
+  }
+
+  async function destroyUserData() {
+    try {
+      await Promise.all([storage.destroyUser(), storage.destroyToken()])
+      setUser(null)
+    } catch (error) {
+      console.error(error)
+      toast.show({
+        type: 'error',
+        message: 'Error ao remover informações de usuário',
+      })
+    }
   }
 
   async function saveUserData(user: User, token: string) {
@@ -122,9 +136,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
         password,
       })
 
-      console.log({ token })
-
       if (user && token) await saveUserData(user, token)
+    } catch (error) {
+      handleError(error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  async function signOut() {
+    setIsLoading(true)
+
+    try {
+      // await api.post<AuthResponse>('auth/sign_out')
+      await destroyUserData()
     } catch (error) {
       handleError(error)
     } finally {
@@ -134,7 +159,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   return (
     <AuthContext.Provider
-      value={{ user, signUp, signIn, loadUserData, isLoading }}
+      value={{ user, signUp, signIn, signOut, loadUserData, isLoading }}
     >
       {children}
     </AuthContext.Provider>

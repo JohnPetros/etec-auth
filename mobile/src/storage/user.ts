@@ -11,4 +11,8 @@ export default {
     const user = await AsyncStorage.getItem(USER_KEY)
     if (user) return await JSON.parse(user)
   },
+
+  async destroyUser() {
+    await AsyncStorage.removeItem(USER_KEY)
+  },
 }
