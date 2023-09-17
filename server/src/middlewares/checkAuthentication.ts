@@ -10,13 +10,13 @@ export function checkAuthentication(
   const authHeader = request.headers.authorization
 
   if (!authHeader) {
-    throw new AppError('Token missing!', 401)
+    throw new AppError('Token is missing!', 401)
   }
 
   const token = authHeader.split(' ')[1]
 
   if (!token) {
-    throw new AppError('Token missing!', 401)
+    throw new AppError('Token is missing!', 401)
   }
 
   const jwt = new Jwt()
