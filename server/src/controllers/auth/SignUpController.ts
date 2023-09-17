@@ -1,15 +1,15 @@
 import { Request, Response } from 'express'
-import { CreateUserUseCase } from '../useCases/CreateUserUseCase'
-import { UsersRepository } from '../repositories/UsersRepository'
+import { UsersRepository } from '../../repositories/UsersRepository'
+import { RegisterUserUseCase } from '../../useCases/auth/RegisterUserUseCase'
 
 export class SignUpController {
   async handle(request: Request, response: Response) {
     const { name, email, password, password_confirmation } = request.body
 
     const usersRepository = new UsersRepository()
-    const createUserUseCase = new CreateUserUseCase(usersRepository)
+    const registerUserUseCase = new RegisterUserUseCase(usersRepository)
 
-    const createdUser = await createUserUseCase.execute({
+    const createdUser = await registerUserUseCase.execute({
       name,
       email,
       password,

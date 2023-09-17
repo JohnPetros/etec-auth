@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
-import { UsersRepository } from '../repositories/UsersRepository'
-import { AuthenticateUserUseCase } from '../useCases/AuthenticateUserUseCase'
+import { UsersRepository } from '../../repositories/UsersRepository'
+import { AuthenticateUserUseCase } from '../../useCases/auth/AuthenticateUserUseCase'
 
 export class SignInController {
   async handle(request: Request, response: Response) {
