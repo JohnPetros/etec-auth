@@ -6,10 +6,10 @@ export class Jwt {
   public tokenExpiresIn = '1d'
   public refreshTokenExpiresIn = 30
 
-  generateToken(email: string) {
+  generateToken(userId: string) {
     if (this.secretToken) {
       const token = sign({}, this.secretToken, {
-        subject: email,
+        subject: userId,
         expiresIn: this.tokenExpiresIn,
       })
 
