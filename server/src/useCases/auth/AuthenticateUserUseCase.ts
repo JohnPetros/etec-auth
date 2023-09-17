@@ -31,7 +31,6 @@ export class AuthenticateUserUseCase {
 
     const user = await this.usersRepository.findByEmail(email)
 
-
     if (!user) {
       throw new AppError('User not found', 404)
     }
@@ -49,9 +48,14 @@ export class AuthenticateUserUseCase {
     const token = jwt.generateToken(user.id)
 
     if (!token) {
-      throw new AppError('erro ao autenticar usuário', 404)
+      throw new AppError('erro ao criar token de autenticação', 500)
     }
 
+    const oldToken = await this.tokensRepository.findByUserId(user.id)
+    
+    if (oldToken) {
+      this.tokensRepository.deleteById(oldToken.id)
+    }
 
     const refreshToken = await jwt.generateRefreshToken(user.id)
 
