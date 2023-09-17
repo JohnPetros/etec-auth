@@ -5,6 +5,8 @@ import { AppError } from '../../utils/AppError'
 import { Validator } from '../../utils/Validator'
 import { Jwt } from '../../utils/Jwt'
 import { Encryptor } from '../../utils/Encryptor'
+import { ITokensRepository } from '../../repositories/interfaces/ITokensRepository'
+import { Time } from '../../utils/Time'
 
 interface Request {
   email: string
@@ -17,7 +19,10 @@ interface Response {
 }
 
 export class AuthenticateUserUseCase {
-  constructor(private usersRepository: IUsersRepository) {}
+  constructor(
+    private usersRepository: IUsersRepository,
+    private tokensRepository: ITokensRepository
+  ) {}
 
   async execute({ email, password }: Request): Promise<Response> {
     const validator = new Validator()
@@ -25,6 +30,7 @@ export class AuthenticateUserUseCase {
     validator.validateSignInUser({ email, password })
 
     const user = await this.usersRepository.findByEmail(email)
+
 
     if (!user) {
       throw new AppError('User not found', 404)
@@ -35,18 +41,31 @@ export class AuthenticateUserUseCase {
     const passwordMatch = await encryptor.compareHash(password, user.password)
 
     if (!passwordMatch) {
-      throw new AppError('User not found', 404)
+      throw new AppError('usuário não encontrado', 404)
     }
 
     const jwt = new Jwt()
 
-    console.log(user)
-
-    const token = jwt.generateToken(user.email)
+    const token = jwt.generateToken(user.id)
 
     if (!token) {
-      throw new AppError('token is missing', 500)
+      throw new AppError('erro ao autenticar usuário', 404)
     }
+
+
+    const refreshToken = await jwt.generateRefreshToken(user.id)
+
+    if (!refreshToken) {
+      throw new AppError('refresh token não pôde ser criado', 500)
+    }
+
+    const time = new Time()
+
+    await this.tokensRepository.create({
+      content: refreshToken,
+      user_id: user.id,
+      expires_in: time.addDays(jwt.refreshTokenExpiresIn),
+    })
 
     return { user, token }
   }
