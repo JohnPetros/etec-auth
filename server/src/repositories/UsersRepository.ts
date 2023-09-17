@@ -18,7 +18,7 @@ export class UsersRepository implements IUsersRepository {
       const user = await this.Repository.findOne({ id })
 
       if (!user) {
-        throw new AppError('Failed to find a user by id')
+        return null
       }
 
       return {
@@ -38,7 +38,7 @@ export class UsersRepository implements IUsersRepository {
       const user = await this.Repository.findOne({ email })
 
       if (!user) {
-        throw new AppError('Failed to find a user by id')
+        return null
       }
 
       return {
@@ -53,11 +53,13 @@ export class UsersRepository implements IUsersRepository {
     }
   }
 
-  async create({ name, email, password }: CreateUserDTO): Promise<User> {
+  async create({ name, email, password }: CreateUserDTO): Promise<User | null> {
     try {
       const user = new this.Repository({ name, email, password })
       const createdUser = await user.save()
-      return createdUser
+      console.log({ createdUser })
+
+      return await this.findByEmail(createdUser.email)
     } catch (error) {
       console.error(error)
       throw new AppError('Failed to create a user')
