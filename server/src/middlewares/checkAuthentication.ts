@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
-import { verify } from 'jsonwebtoken'
 import { AppError } from '../utils/AppError'
+import { Jwt } from '../utils/Jwt'
 
 export function checkAuthentication(
   request: Request,
@@ -13,16 +13,16 @@ export function checkAuthentication(
     throw new AppError('Token missing!', 401)
   }
 
-  const secretToken = process.env.SECRET_TOKEN
-
-  if (!secretToken) {
-    throw new AppError('Token is missing', 500)
-  }
-
   const token = authHeader.split(' ')[1]
 
+  if (!token) {
+    throw new AppError('Token missing!', 401)
+  }
+
+  const jwt = new Jwt()
+
   try {
-    const { sub: user_id } = verify(token, secretToken)
+    jwt.verifyToken(token)
 
     next()
   } catch (error) {
