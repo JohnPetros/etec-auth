@@ -30,7 +30,7 @@ export function SubjectCard({ title, icon }: SubjectCardProps) {
         >
           <Icon as={Computer} name={icon} color="$blue900" size={40} />
         </Box>
-        <Text color='$title100'>{title}</Text>
+        <Text color="$light100">{title}</Text>
       </HStack>
       <Icon as={ChevronRight} color="$blue900" size={40} />
     </Button>
