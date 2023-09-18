@@ -1,20 +1,24 @@
-// export class RefreshTokenController {
-//   async handle(request: Request, response: Response) {
-//     const { email, password } = request.body
+import { Request, Response } from 'express'
 
-//     const usersRepository = new UsersRepository()
-//     const tokensRepository = new TokensRepository()
+import { TokensRepository } from '../../repositories/TokensRepository'
+import { UsersRepository } from '../../repositories/UsersRepository'
 
-//     const authenticateUserUseCase = new AuthenticateUserUseCase(
-//       usersRepository,
-//       tokensRepository
-//     )
+import { RefreshTokenUseCase } from '../../useCases/auth/RefreshTokenUseCase'
 
-//     const { user, token } = await authenticateUserUseCase.execute({
-//       email,
-//       password,
-//     })
+export class RefreshTokenController {
+  async handle(request: Request, response: Response) {
+    const { refresh_token } = request.body
 
-//     return response.json({ user, token })
-//   }
-// }
+    const usersRepository = new UsersRepository()
+    const tokensRepository = new TokensRepository()
+
+    const refreshTokenUseCase = new RefreshTokenUseCase(
+      usersRepository,
+      tokensRepository
+    )
+
+    const token = await refreshTokenUseCase.execute(refresh_token)
+
+    return response.json({ token })
+  }
+}

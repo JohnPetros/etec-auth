@@ -1,51 +1,63 @@
+import { ITokensRepository } from '../../repositories/interfaces/ITokensRepository'
+import { IUsersRepository } from '../../repositories/interfaces/IUsersRepository'
+
 import { AppError } from '../../utils/AppError'
 import { Jwt } from '../../utils/Jwt'
-import { ITokensRepository } from '../../repositories/interfaces/ITokensRepository'
 import { Time } from '../../utils/Time'
 
-interface Response {
-  token: string
-  refresh_token: string
-}
+export class RefreshTokenUseCase {
+  constructor(
+    private usersRepository: IUsersRepository,
+    private tokensRepository: ITokensRepository
+  ) {}
 
-export class RefreshTokenUserUseCase {
-  constructor(private tokensRepository: ITokensRepository) {}
-
-  async execute(token: string): Promise<Response> {
-    if (!token) {
-      throw new AppError('token inválido', 400)
+  async execute(refreshToken: string): Promise<string> {
+    if (!refreshToken) {
+      throw new AppError('refresh token não fornecido', 401)
     }
 
     const jwt = new Jwt()
 
-    const userId = jwt.verifyToken(token)
+    const userId = jwt.verifyRefreshToken(refreshToken)
 
     if (!userId) {
-      throw new AppError('user não encontrado', 404)
+      throw new AppError('usuário não encontrado', 401)
+    }
+
+    const user = await this.usersRepository.findById(userId)
+
+    if (!user) {
+      throw new AppError('usuário não encontrado', 401)
     }
 
     const oldToken = await this.tokensRepository.findByUserId(userId)
 
     if (!oldToken) {
-      throw new AppError('refresh token não foi encontrado', 404)
+      throw new AppError('refresh token não encontrado', 401)
     }
 
     await this.tokensRepository.deleteById(oldToken.id)
 
-    const refreshToken = await jwt.generateRefreshToken(userId)
+    const newRefreshToken = jwt.generateRefreshToken(userId)
 
-    if (!refreshToken) {
+    if (!newRefreshToken) {
       throw new AppError('refresh token não pôde ser criado', 500)
     }
 
     const time = new Time()
 
     await this.tokensRepository.create({
-      content: refreshToken,
+      content: newRefreshToken,
       user_id: userId,
       expires_in: time.addDays(jwt.refreshTokenExpiresIn),
     })
 
-    return { token, refresh_token: refreshToken }
+    const newToken = jwt.generateToken(userId)
+
+    if (!newToken) {
+      throw new AppError('novo token não pôde ser criado', 500)
+    }
+
+    return newToken
   }
 }
