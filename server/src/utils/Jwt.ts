@@ -17,11 +17,11 @@ export class Jwt {
     }
   }
 
-  async generateRefreshToken(userId: string) {
+  generateRefreshToken(userId: string) {
     if (this.secretRefreshToken) {
       const refreshToken = sign({}, this.secretRefreshToken, {
         subject: userId,
-        expiresIn: this.refreshTokenExpiresIn,
+        expiresIn: `${this.refreshTokenExpiresIn}d`,
       })
 
       return refreshToken
@@ -31,6 +31,13 @@ export class Jwt {
   verifyToken(token: string) {
     if (this.secretToken) {
       const { sub } = verify(token, this.secretToken)
+      return String(sub)
+    }
+  }
+
+  verifyRefreshToken(refreshToken: string) {
+    if (this.secretRefreshToken) {
+      const { sub } = verify(refreshToken, this.secretRefreshToken)
       return String(sub)
     }
   }
