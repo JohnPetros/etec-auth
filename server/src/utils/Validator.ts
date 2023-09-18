@@ -7,13 +7,13 @@ export class Validator {
 
   private emailSchema = z
     .string({
-      required_error: 'Insira uma senha'
-    })  
+      required_error: 'Insira uma senha',
+    })
     .email('E-mail está no formato incorreto')
 
   private passwordShema = z
     .string({
-      required_error: 'Insira uma senha'
+      required_error: 'Insira uma senha',
     })
     .refine(
       (password) => this.passwordRegex.test(password),
@@ -29,15 +29,15 @@ export class Validator {
     .object({
       name: z
         .string({
-          required_error: 'Insira um nome de usuário'
+          required_error: 'Insira um nome de usuário',
         })
-        
+
         .min(3, 'Nome de usuário deve ter pelo menos 3 caracteres'),
       email: this.emailSchema,
       password: this.passwordShema,
       password_confirmation: z.string({
-        required_error: 'Confirme sua senha'
-      })
+        required_error: 'Confirme sua senha',
+      }),
     })
     .refine(
       ({ password, password_confirmation }) =>
@@ -45,7 +45,7 @@ export class Validator {
       'Senhas não conferem'
     )
 
-  execute(validation: () => void) {
+  private execute(validation: () => void) {
     try {
       validation()
     } catch (error) {
@@ -55,6 +55,10 @@ export class Validator {
 
   formatError(error: ZodError) {
     return error.issues.map((error) => error.message)
+  }
+
+  validateEmail(email: string) {
+    return this.execute(() => this.emailSchema.parse(email))
   }
 
   validateSignUpUser({
