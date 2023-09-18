@@ -9,17 +9,17 @@ export class SignInController {
 
     const usersRepository = new UsersRepository()
     const tokensRepository = new TokensRepository()
-    
+
     const authenticateUserUseCase = new AuthenticateUserUseCase(
       usersRepository,
       tokensRepository
     )
 
-    const { user, token } = await authenticateUserUseCase.execute({
+    const { user, token, refreshToken } = await authenticateUserUseCase.execute({
       email,
       password,
     })
 
-    return response.json({ user, token })
+    return response.json({ user, token, refreshToken })
   }
 }
