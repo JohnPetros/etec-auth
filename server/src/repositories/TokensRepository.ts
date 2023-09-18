@@ -14,11 +14,21 @@ export class TokensRepository implements ITokensRepository {
   }
 
   async deleteById(id: string): Promise<void> {
-    await this.Repository.deleteOne({ id })
+    try {
+      await this.Repository.deleteOne({ id })
+    } catch (error) {
+      console.error(error)
+      throw new AppError('Erro ao tentar deletar token', 500)
+    }
   }
 
   async findByUserId(user_id: string): Promise<Token | null> {
-    return await this.Repository.findOne<Token>({ user_id })
+    try {
+      return await this.Repository.findOne<Token>({ user_id })
+    } catch (error) {
+      console.error(error)
+      throw new AppError('Erro ao encontrar token', 500)
+    }
   }
 
   async create({
@@ -26,16 +36,19 @@ export class TokensRepository implements ITokensRepository {
     expires_in,
     user_id,
   }: CreateTokenDTO): Promise<Token | null> {
-    console.log(content)
+    try {
+      const newToken = new this.Repository({
+        content,
+        expires_in,
+        user_id,
+      })
 
-    const newToken = new this.Repository({
-      content,
-      expires_in,
-      user_id,
-    })
+      await newToken.save()
 
-    await newToken.save()
-
-    return await this.findByUserId(user_id)
+      return await this.findByUserId(user_id)
+    } catch (error) {
+      console.error(error)
+      throw new AppError('Erro ao tentar salvar token', 500)
+    }
   }
 }
