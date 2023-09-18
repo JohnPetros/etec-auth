@@ -16,6 +16,7 @@ interface Request {
 interface Response {
   user: User
   token: string
+  refreshToken: string
 }
 
 export class AuthenticateUserUseCase {
@@ -52,7 +53,7 @@ export class AuthenticateUserUseCase {
     }
 
     const oldToken = await this.tokensRepository.findByUserId(user.id)
-    
+
     if (oldToken) {
       this.tokensRepository.deleteById(oldToken.id)
     }
@@ -71,6 +72,6 @@ export class AuthenticateUserUseCase {
       expires_in: time.addDays(jwt.refreshTokenExpiresIn),
     })
 
-    return { user, token }
+    return { user, token, refreshToken }
   }
 }
