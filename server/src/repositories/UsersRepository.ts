@@ -4,7 +4,6 @@ import { CreateUserDTO } from '../dtos/CreateUserDTO'
 import { UserModel } from '../models/UserModel'
 
 import { AppError } from '../utils/AppError'
-import { v4 as uuid } from 'uuid'
 
 export class UsersRepository implements IUsersRepository {
   private Repository: typeof UserModel
@@ -15,7 +14,7 @@ export class UsersRepository implements IUsersRepository {
 
   async findById(id: string): Promise<User | null> {
     try {
-      const user = await this.Repository.findOne({ id })
+      const user = await this.Repository.findOne({ _id: id })
 
       if (!user) {
         return null
@@ -29,7 +28,7 @@ export class UsersRepository implements IUsersRepository {
       }
     } catch (error) {
       console.error(error)
-      throw new AppError('Failed to find a user by email')
+      throw new AppError('Erro ao tentar encontrar usuário por e-mail')
     }
   }
 
@@ -49,7 +48,7 @@ export class UsersRepository implements IUsersRepository {
       }
     } catch (error) {
       console.error(error)
-      throw new AppError('Failed to find a user by id')
+      throw new AppError('Erro ao tentar encontrar usuário por id')
     }
   }
 
@@ -57,12 +56,11 @@ export class UsersRepository implements IUsersRepository {
     try {
       const user = new this.Repository({ name, email, password })
       const createdUser = await user.save()
-      console.log({ createdUser })
 
       return await this.findByEmail(createdUser.email)
     } catch (error) {
       console.error(error)
-      throw new AppError('Failed to create a user')
+      throw new AppError('Erro ao tentar criar usuário')
     }
   }
 }
