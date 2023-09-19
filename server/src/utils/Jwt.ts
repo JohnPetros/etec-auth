@@ -3,8 +3,8 @@ import { sign, verify } from 'jsonwebtoken'
 export class Jwt {
   private readonly secretToken = process.env.SECRET_TOKEN
   private readonly secretRefreshToken = process.env.REFRESH_SECRET_TOKEN
-  public tokenExpiresIn = '1d'
-  public refreshTokenExpiresIn = 30
+  public readonly tokenExpiresIn = '1d'
+  public readonly refreshTokenExpiresIn = 30
 
   generateToken(userId: string) {
     if (this.secretToken) {
