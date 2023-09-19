@@ -23,6 +23,7 @@ export async function checkAuthentication(
   const jwt = new Jwt()
 
   try {
+
     const userId = jwt.verifyToken(token)
 
     if (!userId) {
@@ -39,6 +40,7 @@ export async function checkAuthentication(
 
     next()
   } catch (error) {
+    console.error(error)
     throw new AppError('Token de autenticação inválido', 401)
   }
 }
