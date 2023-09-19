@@ -1,8 +1,11 @@
+import { File } from '../utils/File'
+import { TemplateEngine } from '../utils/TemplateEngine'
 import { IMailService } from './interfaces/IMailService'
 import nodemailer, { Transporter } from 'nodemailer'
 
 export class MailService implements IMailService {
   private client: Transporter | null = null
+  from = 'Etec Auth <etec@auth.com.br>'
 
   constructor() {
     nodemailer
@@ -23,14 +26,28 @@ export class MailService implements IMailService {
       .catch((error) => console.error(error))
   }
 
-  async send(to: string, subject: string, body: string): Promise<void> {
+  async send(
+    to: string,
+    subject: string,
+    path: string,
+    variables: Record<string, string>
+  ): Promise<void> {
     if (this.client) {
+      const file = new File()
+
+      const templateFileContent = file.read(path)
+
+      const templateEngine = new TemplateEngine()
+
+      const templateParse = templateEngine.compile(templateFileContent)
+
+      const templateHTML = templateParse(variables)
+
       const message = await this.client.sendMail({
         to,
-        from: 'Etec Auth <etec@auth.com.br>',
+        from: this.from,
         subject,
-        text: body,
-        html: body,
+        html: templateHTML,
       })
 
       console.log('Message sent: %s', message.messageId)
