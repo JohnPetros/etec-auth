@@ -5,6 +5,7 @@ import { IMailService } from '../../services/interfaces/IMailService'
 import { Validator } from '../../utils/Validator'
 import { AppError } from '../../utils/AppError'
 import { Time } from '../../utils/Time'
+import { File } from '../../utils/File'
 import { v4 as uuid } from 'uuid'
 
 export class SendForgotPasswordMailUseCase {
@@ -35,10 +36,32 @@ export class SendForgotPasswordMailUseCase {
       expires_in: time.addHours(3),
     })
 
+    const baseUrl = process.env.BASE_URL
+
+    if (!baseUrl) {
+      throw new AppError('Url para resetar a senha nao registrado', 500)
+    }
+
+    const mailVariables = {
+      name: user.name,
+      link: `${baseUrl}/${token}`,
+    }
+
+    const file = new File()
+
+    const templatePath = file.resolvePath(
+      __dirname,
+      '..',
+      '..',
+      'views',
+      'forgotPasswordMail.hbs'
+    )
+
     await this.mailService.send(
       email,
       'Recuperação de senha',
-      `O link para o reset é ${token}`
+      templatePath,
+      mailVariables
     )
   }
 }
