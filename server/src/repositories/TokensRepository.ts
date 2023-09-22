@@ -13,18 +13,36 @@ export class TokensRepository implements ITokensRepository {
     this.Repository = TokenModel
   }
 
-  async deleteById(id: string): Promise<void> {
+  async findByContent(content: string): Promise<Token | null> {
     try {
-      await this.Repository.deleteOne({ id })
+      const token = await this.Repository.findOne({ content })
+
+      if (!token) return null
+
+      return {
+        id: token._id.toHexString(),
+        content: token?.content,
+        user_id: token?.user_id,
+        expires_in: token?.expires_in,
+      }
     } catch (error) {
       console.error(error)
-      throw new AppError('Erro ao tentar deletar token', 500)
+      throw new AppError('Erro ao encontrar token', 500)
     }
   }
 
   async findByUserId(user_id: string): Promise<Token | null> {
     try {
-      return await this.Repository.findOne<Token>({ user_id })
+      const token = await this.Repository.findOne({ user_id })
+
+      if (!token) return null
+
+      return {
+        id: token._id.toHexString(),
+        content: token?.content,
+        user_id: token?.user_id,
+        expires_in: token?.expires_in,
+      }
     } catch (error) {
       console.error(error)
       throw new AppError('Erro ao encontrar token', 500)
@@ -49,6 +67,15 @@ export class TokensRepository implements ITokensRepository {
     } catch (error) {
       console.error(error)
       throw new AppError('Erro ao tentar salvar token', 500)
+    }
+  }
+
+  async deleteById(id: string): Promise<void> {
+    try {
+      await this.Repository.deleteOne({ _id: id })
+    } catch (error) {
+      console.error(error)
+      throw new AppError('Erro ao tentar deletar token', 500)
     }
   }
 }
