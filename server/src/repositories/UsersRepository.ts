@@ -52,9 +52,20 @@ export class UsersRepository implements IUsersRepository {
     }
   }
 
+  async update(new_data: Partial<User>, id: string): Promise<User | null> {
+    try {
+      await this.Repository.findOneAndUpdate({ _id: id }, { ...new_data })
+
+      return await this.findById(id)
+    } catch (error) {
+      throw new AppError('Erro ao tentar atualizar dados de usuário')
+    }
+  }
+
   async create({ name, email, password }: CreateUserDTO): Promise<User | null> {
     try {
       const user = new this.Repository({ name, email, password })
+
       const createdUser = await user.save()
 
       return await this.findByEmail(createdUser.email)
