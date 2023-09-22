@@ -22,6 +22,6 @@ export class SignUpController {
       password_confirmation,
     })
 
-    return response.json({ user: createdUser })
+    return response.status(201).json({ user: createdUser })
   }
 }
