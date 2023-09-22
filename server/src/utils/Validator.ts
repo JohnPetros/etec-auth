@@ -61,6 +61,10 @@ export class Validator {
     return this.execute(() => this.emailSchema.parse(email))
   }
 
+  validatePassword(password: string) {
+    return this.execute(() => this.passwordShema.parse(password))
+  }
+
   validateSignUpUser({
     name,
     email,
