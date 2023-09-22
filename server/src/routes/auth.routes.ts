@@ -6,17 +6,20 @@ import { RefreshTokenController } from '../controllers/auth/RefreshTokenControll
 import { checkAuthentication } from '../middlewares/checkAuthentication'
 import { SendForgotPasswordMailController } from '../controllers/auth/SendForgotPasswordMailController'
 import { ResetPasswordController } from '../controllers/auth/ResetPasswordController'
+import { SignOutController } from '../controllers/auth/SignOutUserController'
 
 export const authRoutes = Router()
 
 const signUpController = new SignUpController()
 const signInController = new SignInController()
+const signOutController = new SignOutController()
 const refreshTokenController = new RefreshTokenController()
 const sendForgotPasswordMailController = new SendForgotPasswordMailController()
 const resetPasswordController = new ResetPasswordController()
 
 authRoutes.post('/sign_up', signUpController.handle)
 authRoutes.post('/sign_in', signInController.handle)
+authRoutes.post('/sign_out/:user_id', checkAuthentication, signOutController.handle)
 authRoutes.post(
   '/refresh_token',
   checkAuthentication,
