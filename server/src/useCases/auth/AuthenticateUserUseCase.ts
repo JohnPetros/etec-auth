@@ -33,7 +33,7 @@ export class AuthenticateUserUseCase {
     const user = await this.usersRepository.findByEmail(email)
 
     if (!user) {
-      throw new AppError('User not found', 404)
+      throw new AppError('Usuário não encontrado', 404)
     }
 
     const encryptor = new Encryptor()
@@ -41,7 +41,7 @@ export class AuthenticateUserUseCase {
     const passwordMatch = await encryptor.compareHash(password, user.password)
 
     if (!passwordMatch) {
-      throw new AppError('usuário não encontrado', 404)
+      throw new AppError('Usuário não encontrado', 404)
     }
 
     const jwt = new Jwt()
@@ -49,7 +49,7 @@ export class AuthenticateUserUseCase {
     const token = jwt.generateToken(user.id)
 
     if (!token) {
-      throw new AppError('erro ao criar token de autenticação', 500)
+      throw new AppError('Erro ao criar token de autenticação', 500)
     }
 
     const oldToken = await this.tokensRepository.findByUserId(user.id)
@@ -58,10 +58,10 @@ export class AuthenticateUserUseCase {
       this.tokensRepository.deleteById(oldToken.id)
     }
 
-    const refreshToken = await jwt.generateRefreshToken(user.id)
+    const refreshToken = jwt.generateRefreshToken(user.id)
 
     if (!refreshToken) {
-      throw new AppError('refresh token não pôde ser criado', 500)
+      throw new AppError('Refresh token não pôde ser criado', 500)
     }
 
     const time = new Time()
