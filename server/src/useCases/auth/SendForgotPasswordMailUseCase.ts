@@ -63,5 +63,7 @@ export class SendForgotPasswordMailUseCase {
       templatePath,
       mailVariables
     )
+
+    return `Um e-mail foi enviado para o endereço ${email} para recuperar a sua senha.`
   }
 }

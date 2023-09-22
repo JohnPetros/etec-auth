@@ -18,8 +18,8 @@ export class SendForgotPasswordMailController {
       mailService
     )
 
-    await sendForgotPasswordMailUseCase.execute(email)
+    const message = await sendForgotPasswordMailUseCase.execute(email)
 
-    return response.json()
+    return response.json({ message })
   }
 }
