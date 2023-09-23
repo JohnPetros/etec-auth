@@ -12,6 +12,8 @@ import { Logo } from '../components/Logo'
 import { Input } from '../components/Input'
 import { Button } from '../components/Button'
 import { SignInForm, SignInFormRef } from '../components/SignInForm'
+import { useNavigation } from '@react-navigation/native'
+import { AuthNavigatorRoutesProps } from '../routes/auth.routes'
 
 export function Auth() {
   const {
@@ -34,11 +36,14 @@ export function Auth() {
   }: SignUpFormData) {
     signUp({ name, email, password, password_confirmation })
   }
-
-  console.log('oi')
+  const navigation = useNavigation<AuthNavigatorRoutesProps>()
 
   function handleSignInForm() {
     signInFormRef.current?.expand()
+  }
+
+  function handleForgotPasswordButton() {
+    navigation.navigate('forgotPassword')
   }
 
   return (
@@ -134,9 +139,13 @@ export function Auth() {
             />
           </Box>
 
-          {/* <Box mt={6} w="$full">
-            <Button title="Recuperar senha" isLink={true} />
-          </Box> */}
+          <Box mt={6} w="$full">
+            <Button
+              title="Recuperar senha"
+              isLink={true}
+              onPress={handleForgotPasswordButton}
+            />
+          </Box>
         </Center>
       </TouchableWithoutFeedback>
       <SignInForm ref={signInFormRef} />
