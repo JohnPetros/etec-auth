@@ -15,7 +15,7 @@ export class SendForgotPasswordMailUseCase {
     private mailService: IMailService
   ) {}
 
-  async execute(email: string) {
+  async execute(email: string): Promise<string> {
     const validator = new Validator()
 
     validator.validateEmail(email)
@@ -49,17 +49,21 @@ export class SendForgotPasswordMailUseCase {
 
     const templateEngine = new TemplateEngine()
 
-    const templatePath = templateEngine.getTemplatePath(
-      'mails',
-      'forgotPasswordMail'
-    )
+    try {
+      const templatePath = templateEngine.getTemplatePath(
+        'mails',
+        'forgotPasswordMail.hbs'
+      )
 
-    await this.mailService.send(
-      email,
-      'Recuperação de senha',
-      templatePath,
-      mailVariables
-    )
+      await this.mailService.send(
+        email,
+        'Recuperação de senha',
+        templatePath,
+        mailVariables
+      )
+    } catch (error) {
+      new AppError('Erro ao enviar e-mail para recuperar a senha', 500)
+    }
 
     return `Um e-mail foi enviado para o endereço de e-mail ${email} para recuperar a sua senha`
   }
