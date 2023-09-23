@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { UsersRepository } from '../../repositories/UsersRepository'
-import { AuthenticateUserUseCase } from '../../useCases/auth/AuthenticateUserUseCase'
+import { SignInUserUseCase } from '../../useCases/auth/SignInUserUseCase'
 import { TokensRepository } from '../../repositories/TokensRepository'
 
 export class SignInController {
@@ -10,12 +10,12 @@ export class SignInController {
     const usersRepository = new UsersRepository()
     const tokensRepository = new TokensRepository()
 
-    const authenticateUserUseCase = new AuthenticateUserUseCase(
+    const signInUserUseCase = new SignInUserUseCase(
       usersRepository,
       tokensRepository
     )
 
-    const { user, token, refreshToken } = await authenticateUserUseCase.execute({
+    const { user, token, refreshToken } = await signInUserUseCase.execute({
       email,
       password,
     })
