@@ -25,6 +25,7 @@ export class UsersRepository implements IUsersRepository {
         email: user?.email,
         name: user?.name,
         password: user?.password,
+        is_verified: user?.is_verified,
       }
     } catch (error) {
       console.error(error)
@@ -45,6 +46,7 @@ export class UsersRepository implements IUsersRepository {
         email: user?.email,
         name: user?.name,
         password: user?.password,
+        is_verified: user?.is_verified,
       }
     } catch (error) {
       console.error(error)
@@ -73,5 +75,9 @@ export class UsersRepository implements IUsersRepository {
       console.error(error)
       throw new AppError('Erro ao tentar criar usuário')
     }
+  }
+
+  async verifyUser(id: string): Promise<void> {
+    await this.Repository.findOneAndUpdate({ _id: id }, { is_verified: true })
   }
 }
