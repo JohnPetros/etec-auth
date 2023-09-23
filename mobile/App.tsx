@@ -7,9 +7,10 @@ import { ToastProvider } from './src/contexts/ToastContext'
 import { Routes } from './src/routes'
 
 export default function App() {
+  
   return (
     <GluestackUIProvider>
-      <GestureHandlerRootView style={{ flex: 1, backgroundColor: 'red' }}>
+      <GestureHandlerRootView style={{ flex: 1, backgroundColor: '#1e3a8a' }}>
         <StatusBar
           barStyle="light-content"
           backgroundColor="transparent"
