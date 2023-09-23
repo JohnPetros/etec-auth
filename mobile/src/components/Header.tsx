@@ -35,10 +35,18 @@ export function Header() {
         Etec
       </Heading>
 
-      <HStack gap={8}>
-        <Text color="$blue900">{user?.name}</Text>
+      <HStack gap={8} alignItems="center">
+        <Text color="$blue800" fontWeight="$bold" fontSize="$lg">
+          {user?.name}
+        </Text>
         <TouchableOpacity onPress={handleSignOut}>
-          <Icon as={Ionicons} name="exit-outline" size={24} color="$blue900" />
+          <Icon
+            as={Ionicons}
+            name="exit-outline"
+            size={24}
+            color="$blue800"
+            fontWeight="$bold"
+          />
         </TouchableOpacity>
       </HStack>
     </HStack>
