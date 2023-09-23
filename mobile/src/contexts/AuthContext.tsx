@@ -7,9 +7,14 @@ import {
   getApiErrorMessage,
 } from '../services/api'
 
-import type { AuthResponse } from '../types/authResponse'
-import type { User } from '../types/user'
 import { storage } from '../storage'
+
+import type {
+  ConfirmEmailResponse,
+  SignInResponse,
+  SignUpResponse,
+} from '../types/authResponse'
+import type { User } from '../types/user'
 
 export interface SignUpProps {
   name: string
@@ -23,13 +28,20 @@ interface SignInProps {
   password: string
 }
 
+interface ConfirmEmailProps {
+  email: string
+  emailToken: string
+}
+
 type AuthContextValue = {
   user: User | null
-  signUp: ({}: SignUpProps) => void
-  signIn: ({}: SignInProps) => void
-  signOut: () => void
+  signUp: ({}: SignUpProps) => Promise<void>
+  signIn: ({}: SignInProps) => Promise<void>
+  signOut: () => Promise<void>
+  confirmEmail: ({ email, emailToken }: ConfirmEmailProps) => Promise<boolean>
   loadUserData: () => void
   isLoading: boolean
+  isUserDataLoading: boolean
 }
 
 interface AuthProviderProps {
@@ -41,11 +53,10 @@ export const AuthContext = createContext({} as AuthContextValue)
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [isUserDataLoading, setIsUserDataLoading] = useState(true)
   const toast = useToast()
 
   function handleError(error: unknown) {
-    console.error(error)
-
     const errorMessage = getApiErrorMessage(error)
     const errorFallback = 'Erro interno no sistema'
 
@@ -53,7 +64,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       errorMessage.forEach((message) => {
         toast.show({
           type: 'error',
-          message: errorMessage ?? errorFallback,
+          message: message ?? errorFallback,
         })
       })
     }
@@ -63,7 +74,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function destroyUserData() {
     try {
-      await Promise.all([storage.destroyUser(), storage.destroyToken()])
+      await Promise.all([storage.destroyUser(), storage.destroyAllTokens()])
       setUser(null)
     } catch (error) {
       console.error(error)
@@ -74,11 +85,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-  async function saveUserData(user: User, token: string) {
+  async function saveUser(user: User) {
+    console.log({ user })
+
     try {
-      await Promise.all([storage.saveUser(user), storage.saveToken(token)])
+      await storage.saveUser(user)
       setUser(user)
-      addAuthorizationHeader(token)
     } catch (error) {
       console.error(error)
       toast.show({
@@ -89,13 +101,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   async function loadUserData() {
-    const user = await storage.getUser()
-    const token = await storage.getToken()
+    setIsUserDataLoading(true)
 
-    console.log(user)
+    try {
+      const user = await storage.getUser()
+      const token = await storage.getToken()
 
-    if (user && token) {
-      saveUserData(user, token)
+      if (user && token) {
+        await Promise.all([saveUser(user), storage.saveToken(token)])
+
+        addAuthorizationHeader(token)
+      }
+    } catch (error) {
+    } finally {
+      setIsUserDataLoading(false)
     }
   }
 
@@ -109,15 +128,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     try {
       const {
-        data: { user, token },
-      } = await api.post<AuthResponse>('auth/sign_up', {
+        data: { user, emailToken, message },
+      } = await api.post<SignUpResponse>('auth/sign_up', {
         name,
         email,
         password,
         password_confirmation,
       })
 
-      if (user && token) await saveUserData(user, token)
+      if (user && emailToken) await saveUser(user)
+
+      toast.show({ type: 'success', message })
     } catch (error) {
       handleError(error)
     } finally {
@@ -131,12 +152,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const {
         data: { user, token },
-      } = await api.post<AuthResponse>('auth/sign_in', {
+      } = await api.post<SignInResponse>('auth/sign_in', {
         email,
         password,
       })
 
-      if (user && token) await saveUserData(user, token)
+      if (user && token) {
+        await saveUser(user)
+        addAuthorizationHeader(token)
+      }
     } catch (error) {
       handleError(error)
     } finally {
@@ -147,8 +171,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   async function signOut() {
     setIsLoading(true)
 
+    if (!user) return
+
+    const refreshToken = await storage.getRefreshToken()
+
     try {
-      // await api.post<AuthResponse>('auth/sign_out')
+      await api.post(`auth/sign_out/${user.id}?refresh_token=${refreshToken}`)
       await destroyUserData()
     } catch (error) {
       handleError(error)
@@ -157,9 +185,48 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
+  async function confirmEmail({ email, emailToken }: ConfirmEmailProps) {
+    setIsLoading(true)
+
+    try {
+      addAuthorizationHeader(emailToken)
+
+      const {
+        data: { user, token, refreshToken },
+      } = await api.post<ConfirmEmailResponse>('auth/confirm_email', {
+        email,
+      })
+
+      if (user && token) {
+        await Promise.all([
+          saveUser(user),
+          storage.saveToken(token),
+          storage.saveRefreshToken(refreshToken),
+        ])
+
+        addAuthorizationHeader(token)
+      }
+    } catch (error) {
+      handleError(error)
+    } finally {
+      setIsLoading(false)
+    }
+
+    return false
+  }
+
   return (
     <AuthContext.Provider
-      value={{ user, signUp, signIn, signOut, loadUserData, isLoading }}
+      value={{
+        user,
+        signUp,
+        signIn,
+        signOut,
+        confirmEmail,
+        loadUserData,
+        isLoading,
+        isUserDataLoading,
+      }}
     >
       {children}
     </AuthContext.Provider>

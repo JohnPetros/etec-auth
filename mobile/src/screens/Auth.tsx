@@ -1,19 +1,24 @@
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import { useAuth } from '../hooks/useAuth'
+import { useNavigation } from '@react-navigation/native'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { SignUpFormData, signInFormSchema } from '../libs/zod'
+import { SignUpFormData, signUpFormSchema } from '../libs/zod'
+import { createURL } from 'expo-linking'
+import { Linking } from 'react-native'
 
 import { Keyboard } from 'react-native'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 
-import { Box, Center, Heading, Text, VStack } from '@gluestack-ui/themed'
+import { Box, Center, Heading, VStack } from '@gluestack-ui/themed'
 import { Logo } from '../components/Logo'
 import { Input } from '../components/Input'
 import { Button } from '../components/Button'
 import { SignInForm, SignInFormRef } from '../components/SignInForm'
-import { useNavigation } from '@react-navigation/native'
-import { AuthNavigatorRoutesProps } from '../routes/auth.routes'
+
+import type { AuthNavigatorRoutesProps } from '../routes/auth.routes'
+import { useToast } from '../hooks/useToast'
+import { AppNavigatorRoutesProps } from '../routes/app.routes'
 
 export function Auth() {
   const {
@@ -21,12 +26,14 @@ export function Auth() {
     handleSubmit,
     formState: { errors },
   } = useForm<SignUpFormData>({
-    resolver: zodResolver(signInFormSchema),
+    resolver: zodResolver(signUpFormSchema),
   })
 
-  const { signUp, isLoading } = useAuth()
+  const { user, signUp, confirmEmail, isLoading } = useAuth()
 
   const signInFormRef = useRef<SignInFormRef>(null)
+
+  const emailConfirmationUrl = createURL('email-confirmation')
 
   async function handleSignUp({
     name,
@@ -36,15 +43,53 @@ export function Auth() {
   }: SignUpFormData) {
     signUp({ name, email, password, password_confirmation })
   }
-  const navigation = useNavigation<AuthNavigatorRoutesProps>()
+  const authNavigation = useNavigation<AuthNavigatorRoutesProps>()
+  const appNavigation = useNavigation<AppNavigatorRoutesProps>()
+
+  const toast = useToast()
 
   function handleSignInForm() {
     signInFormRef.current?.expand()
   }
 
   function handleForgotPasswordButton() {
-    navigation.navigate('forgotPassword')
+    authNavigation.navigate('forgotPassword')
   }
+
+  async function handleDeepLink({ url }: { url: string }) {
+    console.log(!url || !url.includes(emailConfirmationUrl))
+
+    if (!url || !url.includes(emailConfirmationUrl)) {
+      toast.show({ type: 'error', message: 'Erro ao confirmar e-mail' })
+      return
+    }
+
+    const token = url.split('/').at(-1)
+
+    if (!token) {
+      toast.show({ type: 'error', message: 'Token inválido' })
+      return
+    }
+
+    if (user) {
+      setTimeout(async () => {
+        const isConfirmed = await confirmEmail({
+          email: user?.email,
+          emailToken: token,
+        })
+
+        if (isConfirmed) {
+          appNavigation.navigate('home')
+        } else {
+          toast.show({ type: 'error', message: 'Erro ao confirmar e-mail' })
+        }
+      }, 1000)
+    }
+  }
+
+  useEffect(() => {
+    Linking.addEventListener('url', handleDeepLink)
+  }, [])
 
   return (
     <Box flex={1} bg="$blue900" p={24}>
