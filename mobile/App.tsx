@@ -5,11 +5,12 @@ import { GluestackUIProvider } from '@gluestack-ui/themed'
 import { AuthProvider } from './src/contexts/AuthContext'
 import { ToastProvider } from './src/contexts/ToastContext'
 import { Pages } from './src/components/Pages'
+import { Routes } from './src/routes'
 
 export default function App() {
   return (
     <GluestackUIProvider>
-      <GestureHandlerRootView>
+      <GestureHandlerRootView style={{ flex: 1, backgroundColor: 'red' }}>
         <StatusBar
           barStyle="light-content"
           backgroundColor="transparent"
@@ -18,7 +19,7 @@ export default function App() {
 
         <ToastProvider>
           <AuthProvider>
-            <Pages />
+            <Routes />
           </AuthProvider>
         </ToastProvider>
       </GestureHandlerRootView>
