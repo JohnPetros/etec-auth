@@ -1,9 +1,18 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { TOKEN_KEY } from './keys'
+import { REFRESH_TOKEN_KEY, TOKEN_KEY } from './keys'
 
 export default {
   async saveToken(token: string) {
     await AsyncStorage.setItem(TOKEN_KEY, JSON.stringify(token))
+  },
+
+  async saveRefreshToken(refresh_token: string) {
+    await AsyncStorage.setItem(REFRESH_TOKEN_KEY, JSON.stringify(refresh_token))
+  },
+
+  async getRefreshToken(): Promise<string | undefined> {
+    const refresh_token = await AsyncStorage.getItem(REFRESH_TOKEN_KEY)
+    if (refresh_token) return await JSON.parse(refresh_token)
   },
 
   async getToken(): Promise<string | undefined> {
@@ -11,7 +20,14 @@ export default {
     if (token) return await JSON.parse(token)
   },
 
-  async destroyToken() {
-    await AsyncStorage.removeItem(TOKEN_KEY)
+  async destroyAllTokens() {
+    await Promise.all([
+      AsyncStorage.removeItem(TOKEN_KEY),
+      AsyncStorage.removeItem(REFRESH_TOKEN_KEY),
+    ])
+  },
+
+  async destroyRefreshToken() {
+    await AsyncStorage.removeItem(REFRESH_TOKEN_KEY)
   },
 }
