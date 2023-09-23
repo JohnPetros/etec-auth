@@ -1,0 +1,25 @@
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack'
+import { Home } from '../screens/Home'
+
+const { Navigator, Screen } = createNativeStackNavigator()
+
+type AppRoutes = {
+  home: undefined
+}
+
+export type AppNavigatorRoutesProps = NativeStackNavigationProp<AppRoutes>
+
+export function AppRoutes() {
+  return (
+    <Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Screen name="home" component={Home} />
+    </Navigator>
+  )
+}
