@@ -11,7 +11,7 @@ export class Validator {
     })
     .email('E-mail está no formato incorreto')
 
-  private passwordShema = z
+  private passwordSchema = z
     .string({
       required_error: 'Insira uma senha',
     })
@@ -20,21 +20,23 @@ export class Validator {
       'Senha está no formato incorreto'
     )
 
+  private nameSchema = z
+    .string({
+      required_error: 'Insira um nome de usuário',
+    })
+
+    .min(3, 'Nome de usuário deve ter pelo menos 3 caracteres')
+
   private signInUserSchema = z.object({
     email: this.emailSchema,
-    password: this.passwordShema,
+    password: this.passwordSchema,
   })
 
   private signUpUserSchema = z
     .object({
-      name: z
-        .string({
-          required_error: 'Insira um nome de usuário',
-        })
-
-        .min(3, 'Nome de usuário deve ter pelo menos 3 caracteres'),
+      name: this.nameSchema,
       email: this.emailSchema,
-      password: this.passwordShema,
+      password: this.passwordSchema,
       password_confirmation: z.string({
         required_error: 'Confirme sua senha',
       }),
@@ -62,7 +64,7 @@ export class Validator {
   }
 
   validatePassword(password: string) {
-    return this.execute(() => this.passwordShema.parse(password))
+    return this.execute(() => this.passwordSchema.parse(password))
   }
 
   validateSignUpUser({
