@@ -1,3 +1,5 @@
+import { User } from '../../entities/User'
+
 import { ITokensRepository } from '../../repositories/interfaces/ITokensRepository'
 import { IUsersRepository } from '../../repositories/interfaces/IUsersRepository'
 
@@ -17,6 +19,12 @@ interface Request {
   password_confirmation: string
 }
 
+interface Response {
+  user: User
+  emailToken: string
+  message: string
+}
+
 export class SignUpUserUseCase {
   constructor(
     private usersRepository: IUsersRepository,
@@ -24,7 +32,12 @@ export class SignUpUserUseCase {
     private mailService: IMailService
   ) {}
 
-  async execute({ name, email, password, password_confirmation }: Request) {
+  async execute({
+    name,
+    email,
+    password,
+    password_confirmation,
+  }: Request): Promise<Response> {
     const validator = new Validator()
 
     validator.validateSignUpUser({
@@ -54,12 +67,12 @@ export class SignUpUserUseCase {
       throw new AppError('error ao salvar dados de usuário', 500)
     }
 
-    const token = uuid()
+    const emailToken = uuid()
 
     const time = new Time()
 
     await this.tokensRepository.create({
-      content: token,
+      content: emailToken,
       user_id: createdUser?.id,
       expires_in: time.addHours(3),
     })
@@ -72,25 +85,30 @@ export class SignUpUserUseCase {
 
     const mailVariables = {
       name: name,
-      link: `${baseUrl}/${token}`,
+      link: `${baseUrl}/${emailToken}`,
     }
 
     const templateEngine = new TemplateEngine()
 
-    const templatePath = templateEngine.getTemplatePath(
-      'mails',
-      'emailConfirmationMail'
-    )
+    try {
+      const templatePath = templateEngine.getTemplatePath(
+        'mails',
+        'emailConfirmationMail.hbs'
+      )
 
-    await this.mailService.send(
-      email,
-      'Confirmação de e-mail',
-      templatePath,
-      mailVariables
-    )
+      await this.mailService.send(
+        email,
+        'Confirmação de e-mail',
+        templatePath,
+        mailVariables
+      )
+    } catch (error) {
+      new AppError('Erro ao enviar e-mail de confirmação', 500)
+    }
 
     return {
       user: createdUser,
+      emailToken,
       message: `Um e-mail foi enviado para o endereço de e-mail ${email} para confirmar seu cadastro`,
     }
   }
