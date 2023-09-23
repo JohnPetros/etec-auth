@@ -12,3 +12,10 @@ export type SignInResponse = {
   token: string
   errorMessage: string | string[]
 }
+
+export type ConfirmEmailResponse = {
+  user: User
+  token: string
+  refreshToken: string
+  errorMessage: string | string[]
+}
