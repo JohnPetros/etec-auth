@@ -98,7 +98,7 @@ export function SignInFormComponent(_: any, ref: ForwardedRef<SignInFormRef>) {
                   type="email"
                   label="E-mail"
                   placeholder="seu@etec.com.br"
-                  value={value}
+                  value={'joao@email.com'}
                   onChange={onChange}
                   errorMessage={errors.email?.message}
                 />
@@ -131,6 +131,9 @@ export function SignInFormComponent(_: any, ref: ForwardedRef<SignInFormRef>) {
 
           <Box mt={16} w="$full">
             <Button title="Criar conta" isLink={true} onPress={collapse} />
+          </Box>
+          <Box mt={16} w="$full">
+            <Button title="Recuperar senha" isLink={true} onPress={collapse} />
           </Box>
         </Center>
       </Box>
