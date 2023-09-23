@@ -22,6 +22,11 @@ const UserSchema = new Schema<User>({
     required: true,
     private: true,
   },
+  is_verified: {
+    type: Boolean,
+    default: false,
+    required: true,
+  }
 })
 
 UserSchema.plugin(normalize)
