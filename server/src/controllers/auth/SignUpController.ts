@@ -1,7 +1,8 @@
 import { Request, Response } from 'express'
 import { UsersRepository } from '../../repositories/UsersRepository'
-import { RegisterUserUseCase } from '../../useCases/auth/RegisterUserUseCase'
 import { TokensRepository } from '../../repositories/TokensRepository'
+import { MailService } from '../../services/MailService'
+import { SignUpUserUseCase } from '../../useCases/auth/SignUpUserUseCase'
 
 export class SignUpController {
   async handle(request: Request, response: Response) {
@@ -9,19 +10,21 @@ export class SignUpController {
 
     const usersRepository = new UsersRepository()
     const tokensRepository = new TokensRepository()
+    const mailService = new MailService()
 
-    const registerUserUseCase = new RegisterUserUseCase(
+    const signUpUserUseCase = new SignUpUserUseCase(
       usersRepository,
-      tokensRepository
+      tokensRepository,
+      mailService
     )
 
-    const createdUser = await registerUserUseCase.execute({
+    const { user, message } = await signUpUserUseCase.execute({
       name,
       email,
       password,
       password_confirmation,
     })
 
-    return response.status(201).json({ user: createdUser })
+    return response.status(201).json({ user, message })
   }
 }
