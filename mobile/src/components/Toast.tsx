@@ -22,7 +22,7 @@ export function Toast({ type, message }: ToastProps) {
         justifyContent="center"
         p={12}
         zIndex={50}
-        w={'90%'}
+        w='$full'
       >
         <ToastTitle color="#000" fontSize={16}>
           {message}
