@@ -5,7 +5,7 @@ import { IMailService } from '../../services/interfaces/IMailService'
 import { Validator } from '../../utils/Validator'
 import { AppError } from '../../utils/AppError'
 import { Time } from '../../utils/Time'
-import { File } from '../../utils/File'
+import { TemplateEngine } from '../../utils/TemplateEngine'
 import { v4 as uuid } from 'uuid'
 
 export class SendForgotPasswordMailUseCase {
@@ -39,7 +39,7 @@ export class SendForgotPasswordMailUseCase {
     const baseUrl = process.env.BASE_URL
 
     if (!baseUrl) {
-      throw new AppError('Url para resetar a senha nao registrado', 500)
+      throw new AppError('Url para resetar a senha não registrado', 500)
     }
 
     const mailVariables = {
@@ -47,14 +47,11 @@ export class SendForgotPasswordMailUseCase {
       link: `${baseUrl}/${token}`,
     }
 
-    const file = new File()
+    const templateEngine = new TemplateEngine()
 
-    const templatePath = file.resolvePath(
-      __dirname,
-      '..',
-      '..',
-      'views',
-      'forgotPasswordMail.hbs'
+    const templatePath = templateEngine.getTemplatePath(
+      'mails',
+      'forgotPasswordMail'
     )
 
     await this.mailService.send(
@@ -64,6 +61,6 @@ export class SendForgotPasswordMailUseCase {
       mailVariables
     )
 
-    return `Um e-mail foi enviado para o endereço ${email} para recuperar a sua senha.`
+    return `Um e-mail foi enviado para o endereço de e-mail ${email} para recuperar a sua senha`
   }
 }
