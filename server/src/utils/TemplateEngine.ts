@@ -9,6 +9,6 @@ export class TemplateEngine {
   getTemplatePath(folder: string, fileName: string) {
     const file = new File()
 
-    return file.resolvePath(__dirname, '..', '..', folder, fileName)
+    return file.resolvePath(__dirname, '..', 'views', folder, fileName)
   }
 }
