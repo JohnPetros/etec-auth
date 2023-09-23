@@ -1,0 +1,55 @@
+<style>
+  * {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  .container {
+    background-color: #7dd3fc;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+
+  }
+  .logo {
+    color: #002851;
+  }
+  .content {
+    background-color: #dbf4ff;
+    color: #000e21;
+    border-radius: 8px;
+    padding: 24px;
+    margin-top: 12px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+  }
+  .link {
+    display: block;
+    padding: 12px 16px;
+    border-radius: 8px;
+    background-color: #7dd3fc;
+  }
+</style>
+
+<div class="container">
+  <h1 class="logo">Etec Auth</h1>
+  <div class="content">
+    <h2>Olá, {{name}}</h2>
+    <p>Para efetuar o seu cadastro, basta clicar no link abaixo e você será redirecionado de volta para o sistema:</p>
+    <a class="link" href="{{link}}">{{link}}</a>
+
+    <p>
+      Caso não tenha sido você que solicitou a alração de senha, basta ignorar
+      este e-mail.
+    </p>
+
+    <p>Atenciosamente, Equipe | Etec Auth</p>
+  </div>
+</div>
