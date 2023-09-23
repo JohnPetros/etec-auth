@@ -23,8 +23,7 @@ export async function checkAuthentication(
   const jwt = new Jwt()
 
   try {
-
-    const userId = jwt.verifyToken(token)
+    const userId = jwt.verifyAuthToken(token)
 
     if (!userId) {
       throw new AppError('Usuário não encontrado', 401)
@@ -41,6 +40,6 @@ export async function checkAuthentication(
     next()
   } catch (error) {
     console.error(error)
-    throw new AppError('Token de autenticação inválido', 401)
+    throw new AppError('Token expirado', 401)
   }
 }
