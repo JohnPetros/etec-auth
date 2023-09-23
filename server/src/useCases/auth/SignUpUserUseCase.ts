@@ -77,15 +77,15 @@ export class SignUpUserUseCase {
       expires_in: time.addHours(3),
     })
 
-    const baseUrl = process.env.BASE_URL
+    const url = process.env.EMAIL_CONFIRMATION_URL
 
-    if (!baseUrl) {
-      throw new AppError('Url para resetar a senha não registrado', 500)
+    if (!url) {
+      throw new AppError('Url confirmar e-mail não registrado', 500)
     }
 
     const mailVariables = {
       name: name,
-      link: `${baseUrl}/${emailToken}`,
+      link: `${url}/${emailToken}`,
     }
 
     const templateEngine = new TemplateEngine()

@@ -18,13 +18,13 @@ export class SignUpController {
       mailService
     )
 
-    const { user, message } = await signUpUserUseCase.execute({
+    const { user, emailToken, message } = await signUpUserUseCase.execute({
       name,
       email,
       password,
       password_confirmation,
     })
 
-    return response.status(201).json({ user, message })
+    return response.status(201).json({ user, emailToken, message })
   }
 }

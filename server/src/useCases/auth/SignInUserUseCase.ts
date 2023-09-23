@@ -47,7 +47,7 @@ export class SignInUserUseCase {
 
     const jwt = new Jwt()
 
-    const token = jwt.generateToken(user.id)
+    const token = jwt.generateAuthToken(user.id)
 
     if (!token) {
       throw new AppError('Erro ao criar token de autenticação', 500)
