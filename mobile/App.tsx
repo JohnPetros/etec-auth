@@ -4,7 +4,6 @@ import { GluestackUIProvider } from '@gluestack-ui/themed'
 
 import { AuthProvider } from './src/contexts/AuthContext'
 import { ToastProvider } from './src/contexts/ToastContext'
-import { Pages } from './src/components/Pages'
 import { Routes } from './src/routes'
 
 export default function App() {
