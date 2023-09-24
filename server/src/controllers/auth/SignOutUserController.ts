@@ -8,7 +8,6 @@ import { SignOutUserUseCase } from '../../useCases/auth/SignOutUserUseCase'
 export class SignOutController {
   async handle(request: Request, response: Response) {
     const { user_id } = request.params
-    const { refresh_token } = request.query
 
     const usersRepository = new UsersRepository()
     const tokensRepository = new TokensRepository()
@@ -18,7 +17,7 @@ export class SignOutController {
       tokensRepository
     )
 
-    await signOutUserUseCase.execute(user_id, String(refresh_token))
+    await signOutUserUseCase.execute(user_id)
 
     return response.send()
   }

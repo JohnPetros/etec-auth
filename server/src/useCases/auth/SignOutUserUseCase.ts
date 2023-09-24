@@ -9,23 +9,17 @@ export class SignOutUserUseCase {
     private tokensRepository: ITokensRepository
   ) {}
 
-  async execute(userId: string, refreshToken: string) {
+  async execute(userId: string) {
     const user = await this.usersRepository.findById(userId)
 
     if (!user) {
-      throw new AppError('Usuário não encontrado', 400)
+      throw new AppError('Usuário não encontrado', 401)
     }
 
-    if (!refreshToken) {
-      throw new AppError('Refresh token não fornecido', 400)
-    }
-
-    const oldRefreshToken = await this.tokensRepository.findByContent(
-      refreshToken
-    )
+    const oldRefreshToken = await this.tokensRepository.findByUserId(userId)
 
     if (!oldRefreshToken) {
-      throw new AppError('Refresh token não fornecido', 400)
+      throw new AppError('Refresh token não encontrado', 401)
     }
 
     await this.tokensRepository.deleteById(oldRefreshToken.id)
