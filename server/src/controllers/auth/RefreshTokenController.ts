@@ -17,8 +17,10 @@ export class RefreshTokenController {
       tokensRepository
     )
 
-    const token = await refreshTokenUseCase.execute(refresh_token)
+    const { token, refreshToken } = await refreshTokenUseCase.execute(
+      refresh_token
+    )
 
-    return response.json({ token })
+    return response.json({ token, refreshToken })
   }
 }
