@@ -27,7 +27,10 @@ export function Home() {
       setActiveCourseId(courses[0].id)
     } catch (error) {
       console.error(error)
-
+      toast.show({
+        type: 'error',
+        message: 'Erro ao listar cursos',
+      })
     }
   }
 
