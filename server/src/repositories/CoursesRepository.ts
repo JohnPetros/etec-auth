@@ -13,7 +13,7 @@ export class CoursesRepository implements ICoursesRepository {
 
   async findAll(): Promise<Course[]> {
     try {
-      return await this.Repository.find<Course>().populate('subjects')
+      return await this.Repository.find<Course>()
     } catch (error) {
       console.error(error)
       throw new AppError('Failed to find all courses')
