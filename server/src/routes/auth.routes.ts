@@ -27,11 +27,7 @@ authRoutes.post(
   checkAuthentication,
   signOutController.handle
 )
-authRoutes.post(
-  '/refresh_token',
-  checkAuthentication,
-  refreshTokenController.handle
-)
+authRoutes.post('/refresh_token', refreshTokenController.handle)
 authRoutes.post('/confirm_email', confirmUserEmailController.handle)
 authRoutes.post(
   '/send_forgot_password_mail',
