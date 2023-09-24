@@ -18,6 +18,10 @@ const passwordSchema = z
     'Senha deve ter pelo menos 6 caracteres, sendo 1 caractere especial, 1 minúscula e 1 maiúscula e 1 número'
   )
 
+const passwordConfirmationSchema = z.string({
+  required_error: 'Confirme sua senha',
+})
+
 export const signUpFormSchema = z
   .object({
     name: z
@@ -27,9 +31,7 @@ export const signUpFormSchema = z
       .min(3, 'Nome de usuário deve ter pelo menos 3 caracteres'),
     email: emailSchema,
     password: passwordSchema,
-    password_confirmation: z.string({
-      required_error: 'Confirme sua senha',
-    }),
+    password_confirmation: passwordConfirmationSchema,
   })
   .refine(
     ({ password, password_confirmation }) => password === password_confirmation,
