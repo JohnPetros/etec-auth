@@ -3,6 +3,7 @@ import { User } from './user'
 export type SignUpResponse = {
   user: User
   emailToken: string
+  refreshToken: string
   message: string
   errorMessage: string | string[]
 }
@@ -10,6 +11,7 @@ export type SignUpResponse = {
 export type SignInResponse = {
   user: User
   token: string
+  refreshToken: string
   errorMessage: string | string[]
 }
 
@@ -18,4 +20,9 @@ export type ConfirmEmailResponse = {
   token: string
   refreshToken: string
   errorMessage: string | string[]
+}
+
+export type RefreshTokenResponse = {
+  token: string
+  refreshToken: string
 }
