@@ -3,9 +3,10 @@ import { Button, ButtonText } from '@gluestack-ui/themed'
 interface CourseButtonProps {
   title: string
   isActive: boolean
+  onPress: VoidFunction
 }
 
-export function CourseButton({ title, isActive }: CourseButtonProps) {
+export function CourseButton({ title, isActive, onPress }: CourseButtonProps) {
   return (
     <Button
       bg={isActive ? '$blue400' : '$blue600'}
@@ -19,6 +20,7 @@ export function CourseButton({ title, isActive }: CourseButtonProps) {
           opacity: 0.7,
         },
       }}
+      onPress={onPress}
     >
       <ButtonText
         fontWeight="$normal"
