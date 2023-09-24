@@ -11,11 +11,10 @@ const CourseSchema = new Schema<Course>({
     type: String,
     required: true,
   },
-  subjects: [{
-    type: Schema.Types.ObjectId,
-    ref: 'subject',
+  icon: {
+    type: String,
     required: true,
-  }]
+  },
 })
 
 CourseSchema.plugin(normalize)
@@ -27,7 +26,5 @@ CourseSchema.set('toObject', {
     delete returnedObject.__v
   },
 })
-
-
 
 export const CourseModel: Model<Course> = model('course', CourseSchema)
