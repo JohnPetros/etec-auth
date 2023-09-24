@@ -11,12 +11,24 @@ export class SubjectsRepository implements ISubjectsRepository {
     this.Repository = SubjectModel
   }
 
+  async listByCourseId(course_id: string): Promise<Subject[] | null> {
+    try {
+      const subjects = await this.Repository.find<Subject>({ course_id })
+      console.log(subjects)
+
+      return subjects
+    } catch (error) {
+      console.error(error)
+      throw new AppError('Erro ao listar disciplinas por curso', 500)
+    }
+  }
+
   async findById(id: string): Promise<Subject | null> {
     try {
       return await this.Repository.findOne<Subject>({ id })
     } catch (error) {
       console.error(error)
-      throw new AppError('Failed to find all subjects')
+      throw new AppError('Erro ao tentar encontrar dados de disciplina', 500)
     }
   }
 }
