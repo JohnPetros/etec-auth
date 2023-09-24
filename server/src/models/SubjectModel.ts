@@ -11,6 +11,10 @@ const SubjectSchema = new Schema<Subject>({
     type: String,
     required: true,
   },
+  course_id: {
+    type: Schema.Types.ObjectId,
+    required: true,
+  },
 })
 
 SubjectSchema.plugin(normalize)
