@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { useFocusEffect } from '@react-navigation/native'
 import { useToast } from '../hooks/useToast'
 
 import { FlatList } from 'react-native'
@@ -9,22 +10,31 @@ import { SubjectCard } from '../components/SubjectCard'
 
 import type { Course } from '../@types/course'
 import type { Subject } from '../@types/subject'
+
 import { api } from '../services/api'
 
+const courseIcons: Record<string, string> = {
+  'desenvolvimento de sistemas': 'computer',
+  'automação industrial': 'computer',
+  administração: 'computer',
+}
+
 export function Home() {
-  const [cousers, setCourses] = useState<Course[]>([])
+  const [courses, setCourses] = useState<Course[]>([])
   const [subjects, setSubjects] = useState<Subject[]>([])
-  const [activeCourseId, setActiveCourseId] = useState('123')
+  const [selectedCourseId, setSelectedCourseId] = useState('')
   const toast = useToast()
 
-  const icon = 'computer'
+  function getCourseTitle(id: string) {
+    return courses.find((course) => course.id === id)?.title ?? courseIcons
+  }
 
   async function fetchCourses() {
     try {
       const response = await api.get('courses')
       const courses = await response.data
       setCourses(courses)
-      setActiveCourseId(courses[0].id)
+      setSelectedCourseId(courses[0].id)
     } catch (error) {
       console.error(error)
       toast.show({
@@ -34,9 +44,30 @@ export function Home() {
     }
   }
 
+  async function fetchSubjectsByCourse() {
+    try {
+      const response = await api.get('subjects?course_id=' + selectedCourseId)
+      const subjects = await response.data
+
+      setSubjects(subjects)
+    } catch (error) {
+      console.error(error)
+      toast.show({
+        type: 'error',
+        message: 'Erro ao listar disciplinas por curso',
+      })
+    }
+  }
+
   useEffect(() => {
     fetchCourses()
   }, [])
+
+  useFocusEffect(
+    useCallback(() => {
+      if (selectedCourseId) fetchSubjectsByCourse()
+    }, [selectedCourseId])
+  )
 
   return (
     <VStack h="$full" bg="$blue900">
@@ -44,12 +75,12 @@ export function Home() {
 
       <Box mt={24} pl={24}>
         <FlatList
-          data={cousers}
+          data={courses}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <CourseButton
               title={item.title}
-              isActive={item.id === activeCourseId}
+              isActive={item.id === selectedCourseId}
             />
           )}
           horizontal
@@ -62,7 +93,14 @@ export function Home() {
           data={subjects}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <SubjectCard title={item.title} icon={'computer'} />
+            <SubjectCard
+              title={item.title}
+              icon={
+                courseIcons[
+                  getCourseTitle(selectedCourseId).toString().toLowerCase()
+                ]
+              }
+            />
           )}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
