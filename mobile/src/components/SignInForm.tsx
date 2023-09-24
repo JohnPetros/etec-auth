@@ -8,13 +8,12 @@ import {
 } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { SignInFormData, SignUpFormData, signInFormSchema } from '../libs/zod'
+import { SignInFormData, signInFormSchema } from '../libs/zod'
 
 import { Box, Center, Heading, VStack } from '@gluestack-ui/themed'
 import { Input } from './Input'
 import { Button } from './Button'
 import BottomSheet from '@gorhom/bottom-sheet'
-import { Keyboard } from 'react-native'
 import { useAuth } from '../hooks/useAuth'
 
 export interface SignInFormRef {
@@ -28,7 +27,7 @@ export function SignInFormComponent(_: any, ref: ForwardedRef<SignInFormRef>) {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignUpFormData>({
+  } = useForm<SignInFormData>({
     resolver: zodResolver(signInFormSchema),
   })
 
@@ -98,7 +97,7 @@ export function SignInFormComponent(_: any, ref: ForwardedRef<SignInFormRef>) {
                   type="email"
                   label="E-mail"
                   placeholder="seu@etec.com.br"
-                  value={'joao@email.com'}
+                  value={value}
                   onChange={onChange}
                   errorMessage={errors.email?.message}
                 />
@@ -111,7 +110,7 @@ export function SignInFormComponent(_: any, ref: ForwardedRef<SignInFormRef>) {
               render={({ field: { onChange, value } }) => (
                 <Input
                   type="password"
-                  label="Confirmação de senha"
+                  label="Senha"
                   placeholder="confirme sua senha"
                   value={value}
                   onChange={onChange}
