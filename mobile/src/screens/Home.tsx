@@ -25,8 +25,12 @@ export function Home() {
   const [selectedCourseId, setSelectedCourseId] = useState('')
   const toast = useToast()
 
-  function getCourseTitle(id: string) {
-    return courses.find((course) => course.id === id)?.title ?? courseIcons
+  function getCourseTitle(courseId: string) {
+    return courses.find((course) => course.id === courseId)?.title ?? courseIcons
+  }
+
+  function handleCourseButtonPress(courseId: string) {
+    setSelectedCourseId(courseId)
   }
 
   async function fetchCourses() {
@@ -81,6 +85,7 @@ export function Home() {
             <CourseButton
               title={item.title}
               isActive={item.id === selectedCourseId}
+              onPress={() => handleCourseButtonPress(item.id)}
             />
           )}
           horizontal
