@@ -13,8 +13,8 @@ import type {
   ConfirmEmailResponse,
   SignInResponse,
   SignUpResponse,
-} from '../types/authResponse'
-import type { User } from '../types/user'
+} from '../@types/authResponse'
+import type { User } from '../@types/user'
 
 export interface SignUpProps {
   name: string

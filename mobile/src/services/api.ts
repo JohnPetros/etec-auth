@@ -4,7 +4,7 @@ import { API_URL } from '@env'
 
 import { storage } from '../storage'
 
-import type { RefreshTokenResponse } from '../types/authResponse'
+import type { RefreshTokenResponse } from '../@types/authResponse'
 
 type ApiData = {
   errorMessage: string
