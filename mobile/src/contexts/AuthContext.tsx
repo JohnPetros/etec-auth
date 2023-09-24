@@ -2,7 +2,7 @@ import { ReactNode, createContext, useState } from 'react'
 import { useToast } from '../hooks/useToast'
 
 import {
-  addAuthorizationHeader,
+  setAuthorizationHeader,
   api,
   getApiErrorMessage,
 } from '../services/api'
@@ -110,7 +110,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (user && token) {
         await Promise.all([saveUser(user), storage.saveToken(token)])
 
-        addAuthorizationHeader(token)
+        setAuthorizationHeader(token)
       }
     } catch (error) {
     } finally {
@@ -151,15 +151,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     try {
       const {
-        data: { user, token },
+        data: { user, token, refreshToken },
       } = await api.post<SignInResponse>('auth/sign_in', {
         email,
         password,
       })
 
-      if (user && token) {
-        await saveUser(user)
-        addAuthorizationHeader(token)
+      if (user.is_verified && token) {
+        await Promise.all([
+          storage.saveToken(token),
+          storage.saveRefreshToken(refreshToken),
+          saveUser(user),
+        ])
+        setAuthorizationHeader(token)
       }
     } catch (error) {
       handleError(error)
@@ -176,7 +180,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const refreshToken = await storage.getRefreshToken()
 
     try {
-      await api.post(`auth/sign_out/${user.id}?refresh_token=${refreshToken}`)
+      await api.post(`auth/sign_out/${user.id}`)
       await destroyUserData()
     } catch (error) {
       handleError(error)
@@ -189,7 +193,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setIsLoading(true)
 
     try {
-      addAuthorizationHeader(emailToken)
+      setAuthorizationHeader(emailToken)
 
       const {
         data: { user, token, refreshToken },
@@ -204,7 +208,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           storage.saveRefreshToken(refreshToken),
         ])
 
-        addAuthorizationHeader(token)
+        setAuthorizationHeader(token)
       }
     } catch (error) {
       handleError(error)
