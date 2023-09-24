@@ -10,10 +10,10 @@ import {
 interface InputProps {
   type: 'email' | 'password' | 'text'
   label: string
-  placeholder: string
-  value: string
   errorMessage: string | undefined
-  onChange: (value: string) => void
+  placeholder: string,
+  value: string,
+  onChange: (value: string) => void,
 }
 
 export function Input({
