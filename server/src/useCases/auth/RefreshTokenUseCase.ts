@@ -5,13 +5,18 @@ import { AppError } from '../../utils/AppError'
 import { Jwt } from '../../utils/Jwt'
 import { Time } from '../../utils/Time'
 
+interface Response {
+  token: string
+  refreshToken: string
+}
+
 export class RefreshTokenUseCase {
   constructor(
     private usersRepository: IUsersRepository,
     private tokensRepository: ITokensRepository
   ) {}
 
-  async execute(refreshToken: string): Promise<string> {
+  async execute(refreshToken: string): Promise<Response> {
     if (!refreshToken) {
       throw new AppError('refresh token não fornecido', 401)
     }
@@ -52,12 +57,12 @@ export class RefreshTokenUseCase {
       expires_in: time.addDays(jwt.refreshTokenExpiresIn),
     })
 
-    const newToken = jwt.generateToken(userId)
+    const newToken = jwt.generateAuthToken(userId)
 
     if (!newToken) {
       throw new AppError('novo token não pôde ser criado', 500)
     }
 
-    return newToken
+    return { token: newToken, refreshToken: newRefreshToken }
   }
 }
