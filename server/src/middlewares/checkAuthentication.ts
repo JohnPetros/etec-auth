@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
+
 import { AppError } from '../utils/AppError'
 import { Jwt } from '../utils/Jwt'
 import { UsersRepository } from '../repositories/UsersRepository'
@@ -22,24 +23,19 @@ export async function checkAuthentication(
 
   const jwt = new Jwt()
 
-  try {
-    const userId = jwt.verifyAuthToken(token)
+  const userId = jwt.verifyAuthToken(token)
 
-    if (!userId) {
-      throw new AppError('Usuário não encontrado', 401)
-    }
-
-    const usersRepository = new UsersRepository()
-
-    const user = await usersRepository.findById(userId)
-
-    if (!user) {
-      throw new AppError('Usuário não encontrado', 401)
-    }
-
-    next()
-  } catch (error) {
-    console.error(error)
-    throw new AppError('Token expirado', 401)
+  if (!userId) {
+    throw new AppError('Usuário não encontrado', 401)
   }
+
+  const usersRepository = new UsersRepository()
+
+  const user = await usersRepository.findById(userId)
+
+  if (!user) {
+    throw new AppError('Usuário não encontrado', 401)
+  }
+
+  next()
 }
