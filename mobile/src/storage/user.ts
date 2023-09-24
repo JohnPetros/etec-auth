@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { USER_KEY } from './keys'
-import type { User } from '../types/user'
+import type { User } from '../@types/user'
 
 export default {
   async saveUser(user: User) {
