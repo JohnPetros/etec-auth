@@ -2,10 +2,10 @@ import { Router } from 'express'
 
 import { FindSubjectByIdController } from '../controllers/subjects/FindSubjectByIdController'
 import { checkAuthentication } from '../middlewares/checkAuthentication'
-import { ListSubjectsByCourseIdController } from '../controllers/subjects/ListSubjectsByCourseId'
+import { ListSubjectsController } from '../controllers/subjects/ListSubjectsController'
 
 const findSubjectByIdController = new FindSubjectByIdController()
-const listSubjectsByCourseIdController = new ListSubjectsByCourseIdController()
+const listSubjectsController = new ListSubjectsController()
 
 export const subjectsRoutes = Router()
 
@@ -15,7 +15,7 @@ subjectsRoutes.get(
   findSubjectByIdController.handle
 )
 subjectsRoutes.get(
-  '/by_course/:course_id',
+  '/',
   checkAuthentication,
-  listSubjectsByCourseIdController.handle
+  listSubjectsController.handle
 )

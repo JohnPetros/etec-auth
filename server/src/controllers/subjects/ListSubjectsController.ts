@@ -1,16 +1,14 @@
 import { Request, Response } from 'express'
 import { SubjectsRepository } from '../../repositories/SubjectsRepository'
 
-export class ListSubjectsByCourseIdController {
+export class ListSubjectsController {
   async handle(request: Request, response: Response) {
-    const { course_id } = request.params
+    const { course_id } = request.query
 
     const subjectsRepository = new SubjectsRepository()
 
-    const subjects = await subjectsRepository.listByCourseId(course_id)
+    const subjects = await subjectsRepository.listAll(String(course_id))
 
-    console.log({ subjects })
-
-    return response.json({ subjects })
+    return response.json(subjects)
   }
 }

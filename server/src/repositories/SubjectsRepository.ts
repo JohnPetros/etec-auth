@@ -11,7 +11,7 @@ export class SubjectsRepository implements ISubjectsRepository {
     this.Repository = SubjectModel
   }
 
-  async listByCourseId(course_id: string): Promise<Subject[] | null> {
+  async listAll(course_id: string): Promise<Subject[] | null> {
     try {
       const subjects = await this.Repository.find<Subject>({ course_id })
       console.log(subjects)
