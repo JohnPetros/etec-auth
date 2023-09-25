@@ -24,7 +24,7 @@ export class SubjectsRepository implements ISubjectsRepository {
 
   async findById(id: string): Promise<Subject | null> {
     try {
-      return await this.Repository.findOne<Subject>({ id }).populate('course_id')
+      return await this.Repository.findOne<Subject>({ _id: id }).populate('course_id')
     } catch (error) {
       console.error(error)
       throw new AppError('Erro ao tentar encontrar dados de disciplina', 500)
