@@ -16,9 +16,10 @@ import { Input } from '../components/Input'
 import { Button } from '../components/Button'
 import { SignInForm, SignInFormRef } from '../components/SignInForm'
 
-import type { AuthNavigatorRoutesProps } from '../routes/auth.routes'
 import { useToast } from '../hooks/useToast'
 import { AppNavigatorRoutesProps } from '../routes/app.routes'
+
+import type { AuthNavigatorRoutesProps } from '../routes/auth.routes'
 
 export function Auth() {
   const {
