@@ -1,7 +1,8 @@
 import express, { Express } from 'express'
-import cors from 'cors'
+import { PUBLIC_FOLDER } from './staticConfig'
 import { router } from '../routes'
 import { handleError } from '../middlewares/handleError'
+import cors from 'cors'
 
 export function appConfig(app: Express): void {
   app.use(express.json())
@@ -11,6 +12,9 @@ export function appConfig(app: Express): void {
       origin: '*',
     })
   )
+
+  app.use('/statics', express.static(PUBLIC_FOLDER))
+
   app.use(router)
 
   app.use(handleError)
