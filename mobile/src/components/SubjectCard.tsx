@@ -1,9 +1,9 @@
 import { Box, Button, HStack, Icon, Text } from '@gluestack-ui/themed'
-import { Computer, ChevronRight } from 'lucide-react-native'
+import { ChevronRight, LucideIcon } from 'lucide-react-native'
 
 interface SubjectCardProps {
   title: string
-  icon: string
+  icon: LucideIcon
   onPress: VoidFunction
 }
 
@@ -30,7 +30,7 @@ export function SubjectCard({ title, icon, onPress }: SubjectCardProps) {
           alignItems="center"
           justifyContent="center"
         >
-          <Icon as={Computer} name={icon} color="$blue900" size={40} />
+          <Icon as={icon} color="$blue900" size={40} />
         </Box>
         <Text color="$light100">{title}</Text>
       </HStack>
