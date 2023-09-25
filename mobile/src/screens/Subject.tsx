@@ -1,14 +1,12 @@
-import { useRoute } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 
 import {
   Box,
   HStack,
   Heading,
   Icon,
-  Image,
   Text,
   VStack,
-  Button,
   Pressable,
   Center,
 } from '@gluestack-ui/themed'
@@ -29,6 +27,7 @@ export function Subject() {
   const route = useRoute()
   const [subject, setSubject] = useState<SubjectData | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const navigation = useNavigation()
 
   const { id } = route.params as RouteParams
 
@@ -38,8 +37,6 @@ export function Subject() {
     try {
       const response = await api.get('subjects/' + id)
       const subject = await response.data
-
-      console.log(`${api.defaults.baseURL}/statics/images/${subject.image}`)
 
       setSubject(subject)
     } catch (error) {
@@ -63,7 +60,7 @@ export function Subject() {
       ) : (
         <VStack pt={12} px={24}>
           <HStack alignItems="center" justifyContent="space-between">
-            <Pressable ml={-12}>
+            <Pressable ml={-12} onPress={navigation.goBack}>
               <Icon as={ChevronLeft} color="$blue300" size={32} />
             </Pressable>
 
