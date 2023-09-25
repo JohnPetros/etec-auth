@@ -13,10 +13,9 @@ export class SubjectsRepository implements ISubjectsRepository {
 
   async listAll(course_id: string): Promise<Subject[] | null> {
     try {
-      const subjects = await this.Repository.find<Subject>({ course_id })
-      console.log(subjects)
-
-      return subjects
+      return await this.Repository.find<Subject>({
+        course_id,
+      }).populate('course_id')
     } catch (error) {
       console.error(error)
       throw new AppError('Erro ao listar disciplinas por curso', 500)
@@ -25,7 +24,7 @@ export class SubjectsRepository implements ISubjectsRepository {
 
   async findById(id: string): Promise<Subject | null> {
     try {
-      return await this.Repository.findOne<Subject>({ id })
+      return await this.Repository.findOne<Subject>({ id }).populate('course_id')
     } catch (error) {
       console.error(error)
       throw new AppError('Erro ao tentar encontrar dados de disciplina', 500)
