@@ -18,6 +18,7 @@ import { Subject as SubjectData } from '../@types/subject'
 import { useEffect, useState } from 'react'
 import { api } from '../services/api'
 import { Loading } from '../components/Loading'
+import { SvgUri } from 'react-native-svg'
 import { COURSE_ICONS } from '../utils/course-icons'
 
 type RouteParams = {
@@ -38,7 +39,7 @@ export function Subject() {
       const response = await api.get('subjects/' + id)
       const subject = await response.data
 
-      console.log(subject.course.title)
+      console.log(`${api.defaults.baseURL}/statics/images/${subject.image}`)
 
       setSubject(subject)
     } catch (error) {
@@ -62,7 +63,7 @@ export function Subject() {
       ) : (
         <VStack pt={12} px={24}>
           <HStack alignItems="center" justifyContent="space-between">
-            <Pressable>
+            <Pressable ml={-12}>
               <Icon as={ChevronLeft} color="$blue300" size={32} />
             </Pressable>
 
@@ -82,11 +83,19 @@ export function Subject() {
             {subject.title}
           </Heading>
 
-          <Box mt={24}>
-            {/* <Image source="../../../server/src/storage/web-development.svg" /> */}
-          </Box>
+          <Center
+            mt={24}
+            height={220}
+            rounded="$md"
+            overflow="hidden"
+          >
+            <SvgUri
+              uri={`${api.defaults.baseURL}/statics/images/${subject.image}`}
+              style={{ width: 220, height: 220 }}
+            />
+          </Center>
 
-          <Box p={12} bg="$blue700" rounded={8}>
+          <Box p={12} mt={24} bg="$blue700" rounded={8}>
             <VStack>
               <HStack gap={8} alignItems="center">
                 <Icon as={AlignCenter} color="$blue300" size={24} />
