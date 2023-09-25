@@ -15,6 +15,7 @@ import type { Subject } from '../@types/subject'
 import { api } from '../services/api'
 import { AppNavigatorRoutesProps } from '../routes/app.routes'
 import { Loading } from '../components/Loading'
+import { COURSE_ICONS } from '../utils/course-icons'
 
 const courseIcons: Record<string, string> = {
   'desenvolvimento de sistemas': 'computer',
@@ -70,6 +71,8 @@ export function Home() {
       const response = await api.get('subjects?course_id=' + selectedCourseId)
       const subjects = await response.data
 
+      console.log(subjects)
+
       setSubjects(subjects)
     } catch (error) {
       console.error(error)
@@ -124,11 +127,7 @@ export function Home() {
             renderItem={({ item }) => (
               <SubjectCard
                 title={item.title}
-                icon={
-                  courseIcons[
-                    getCourseTitle(selectedCourseId).toString().toLowerCase()
-                  ]
-                }
+                icon={COURSE_ICONS[item.course.title.toLowerCase()]}
                 onPress={() => handleSubjectCardPress(item.id)}
               />
             )}
