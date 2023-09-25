@@ -4,9 +4,10 @@ import { Computer, ChevronRight } from 'lucide-react-native'
 interface SubjectCardProps {
   title: string
   icon: string
+  onPress: VoidFunction
 }
 
-export function SubjectCard({ title, icon }: SubjectCardProps) {
+export function SubjectCard({ title, icon, onPress }: SubjectCardProps) {
   return (
     <Button
       bg="$blue700"
@@ -19,6 +20,7 @@ export function SubjectCard({ title, icon }: SubjectCardProps) {
           opacity: 0.7,
         },
       }}
+      onPress={onPress}
     >
       <HStack w="$full" alignItems="center" p={12} gap={12}>
         <Box
