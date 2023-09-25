@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useNavigation } from '@react-navigation/native'
 import { useFocusEffect } from '@react-navigation/native'
 import { useToast } from '../hooks/useToast'
 
 import { FlatList } from 'react-native'
-import { Box, Text, VStack } from '@gluestack-ui/themed'
+import { Box, Center, Text, VStack } from '@gluestack-ui/themed'
 import { Header } from '../components/Header'
 import { CourseButton } from '../components/CourseButton'
 import { SubjectCard } from '../components/SubjectCard'
@@ -12,6 +13,8 @@ import type { Course } from '../@types/course'
 import type { Subject } from '../@types/subject'
 
 import { api } from '../services/api'
+import { AppNavigatorRoutesProps } from '../routes/app.routes'
+import { Loading } from '../components/Loading'
 
 const courseIcons: Record<string, string> = {
   'desenvolvimento de sistemas': 'computer',
@@ -23,17 +26,27 @@ export function Home() {
   const [courses, setCourses] = useState<Course[]>([])
   const [subjects, setSubjects] = useState<Subject[]>([])
   const [selectedCourseId, setSelectedCourseId] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   const toast = useToast()
+  const navigation = useNavigation<AppNavigatorRoutesProps>()
 
   function getCourseTitle(courseId: string) {
-    return courses.find((course) => course.id === courseId)?.title ?? courseIcons
+    return (
+      courses.find((course) => course.id === courseId)?.title ?? courseIcons
+    )
   }
 
   function handleCourseButtonPress(courseId: string) {
     setSelectedCourseId(courseId)
   }
 
+  function handleSubjectCardPress(subjectId: string) {
+    navigation.navigate('subject', { id: subjectId })
+  }
+
   async function fetchCourses() {
+    setIsLoading(true)
+
     try {
       const response = await api.get('courses')
       const courses = await response.data
@@ -45,10 +58,14 @@ export function Home() {
         type: 'error',
         message: 'Erro ao listar cursos',
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
   async function fetchSubjectsByCourse() {
+    setIsLoading(true)
+
     try {
       const response = await api.get('subjects?course_id=' + selectedCourseId)
       const subjects = await response.data
@@ -60,6 +77,8 @@ export function Home() {
         type: 'error',
         message: 'Erro ao listar disciplinas por curso',
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -93,28 +112,35 @@ export function Home() {
         />
       </Box>
 
-      <Box mt={24} p={24}>
-        <FlatList
-          data={subjects}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <SubjectCard
-              title={item.title}
-              icon={
-                courseIcons[
-                  getCourseTitle(selectedCourseId).toString().toLowerCase()
-                ]
-              }
-            />
-          )}
-          showsVerticalScrollIndicator={false}
-          ListEmptyComponent={
-            <Text color="$green100" textAlign="center" fontSize="$lg">
-              Nenhuma disciplina encontrada.
-            </Text>
-          }
-        />
-      </Box>
+      {isLoading ? (
+        <Center flex={1}>
+          <Loading />
+        </Center>
+      ) : (
+        <Box mt={24} p={24}>
+          <FlatList
+            data={subjects}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <SubjectCard
+                title={item.title}
+                icon={
+                  courseIcons[
+                    getCourseTitle(selectedCourseId).toString().toLowerCase()
+                  ]
+                }
+                onPress={() => handleSubjectCardPress(item.id)}
+              />
+            )}
+            showsVerticalScrollIndicator={false}
+            ListEmptyComponent={
+              <Text color="$green100" textAlign="center" fontSize="$lg">
+                Nenhuma disciplina encontrada.
+              </Text>
+            }
+          />
+        </Box>
+      )}
     </VStack>
   )
 }
