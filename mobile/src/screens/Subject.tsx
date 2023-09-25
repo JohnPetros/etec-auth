@@ -1,4 +1,8 @@
-import { useNavigation, useRoute } from '@react-navigation/native'
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native'
 
 import {
   Box,
@@ -13,7 +17,7 @@ import {
 import { Header } from '../components/Header'
 import { ChevronLeft, AlignCenter } from 'lucide-react-native'
 import { Subject as SubjectData } from '../@types/subject'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { api } from '../services/api'
 import { Loading } from '../components/Loading'
 import { SvgUri } from 'react-native-svg'
@@ -45,9 +49,11 @@ export function Subject() {
     }
   }
 
-  useEffect(() => {
-    if (id) fetchSubjectData()
-  }, [id])
+  useFocusEffect(
+    useCallback(() => {
+      if (id) fetchSubjectData()
+    }, [id])
+  )
 
   return (
     <VStack flex={1} bg="$blue900">
@@ -80,15 +86,10 @@ export function Subject() {
             {subject.title}
           </Heading>
 
-          <Center
-            mt={24}
-            height={220}
-            rounded="$md"
-            overflow="hidden"
-          >
+          <Center mt={24} height={220} rounded="$md" overflow="hidden">
             <SvgUri
               uri={`${api.defaults.baseURL}/statics/images/${subject.image}`}
-              style={{ width: 220, height: 220 }}
+              style={{ width: 280, height: 280 }}
             />
           </Center>
 
