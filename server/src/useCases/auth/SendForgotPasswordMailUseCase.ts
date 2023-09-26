@@ -4,9 +4,7 @@ import { IMailService } from '../../services/interfaces/IMailService'
 
 import { Validator } from '../../utils/Validator'
 import { AppError } from '../../utils/AppError'
-import { Time } from '../../utils/Time'
 import { TemplateEngine } from '../../utils/TemplateEngine'
-import { v4 as uuid } from 'uuid'
 import { Jwt } from '../../utils/Jwt'
 
 export class SendForgotPasswordMailUseCase {
