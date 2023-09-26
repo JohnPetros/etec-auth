@@ -1,28 +1,76 @@
-import { useState } from 'react'
+import { useEffect } from 'react'
+import { useAuth } from '../hooks/useAuth'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import { useForm, Controller } from 'react-hook-form'
-import { emailSchema } from '../libs/zod'
+import { forgotPasswordEmailSchema } from '../libs/zod'
+import { createURL } from 'expo-linking'
 
-import { Box, Center, Heading, Text } from '@gluestack-ui/themed'
+import {
+  Box,
+  Center,
+  Heading,
+  Icon,
+  Pressable,
+} from '@gluestack-ui/themed'
 import { Input } from '../components/Input'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '../components/Button'
-import { useAuth } from '../hooks/useAuth'
+import { ArrowLeft } from 'lucide-react-native'
+import { AuthNavigatorRoutesProps } from '../routes/auth.routes'
 
-export function ForgotPassword({}) {
+type RouteParams = {
+  passwordToken: string
+}
+
+type FormData = {
+  email: string
+}
+
+export function ForgotPassword() {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<{ email: string }>({
-    resolver: zodResolver(emailSchema),
+  } = useForm<FormData>({
+    resolver: zodResolver(forgotPasswordEmailSchema),
   })
 
-  const { isLoading } = useAuth()
+  const { sendForgotPasswordMail, isLoading } = useAuth()
 
-  function handleSendForgotPasswordMail() {}
+  const navigation = useNavigation<AuthNavigatorRoutesProps>()
+  const route = useRoute()
+  const params = route.params as RouteParams
+
+  const passwordResetUrl = createURL('password-reset')
+
+  async function handleSendForgotPasswordMail({ email }: FormData) {
+    await sendForgotPasswordMail(email)
+  }
+
+  function handleBackToAuthScreen() {
+    navigation.navigate('auth')
+  }
+
+  function handlePasswordToken(token: string) {
+
+  }
+
+  useEffect(() => {
+    if (params?.passwordToken) {
+      handlePasswordToken(params.passwordToken)
+    }
+  }, [params])
 
   return (
     <Box flex={1} bg="$blue900" p={24}>
+      <Pressable mt={40}>
+        <Icon
+          as={ArrowLeft}
+          color="$light100"
+          size={32}
+          onPress={handleBackToAuthScreen}
+        />
+      </Pressable>
       <Center flex={1} w="$full">
         <Heading color="$light100">
           Insira seu e-mail para recuperar sua senha
@@ -46,7 +94,7 @@ export function ForgotPassword({}) {
 
         <Box mt={24} w="$full">
           <Button
-            title="Criar conta"
+            title="Enviar e-mail"
             onPress={handleSubmit(handleSendForgotPasswordMail)}
             isLoading={isLoading}
           />
