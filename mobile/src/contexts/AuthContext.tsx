@@ -11,6 +11,7 @@ import { storage } from '../storage'
 
 import type {
   ConfirmEmailResponse,
+  SendForgotPasswordMail,
   SignInResponse,
   SignUpResponse,
 } from '../@types/authResponse'
@@ -40,6 +41,7 @@ type AuthContextValue = {
   signOut: () => Promise<void>
   confirmEmail: ({ email, emailToken }: ConfirmEmailProps) => Promise<boolean>
   loadUserData: () => void
+  sendForgotPasswordMail: (email: string) => Promise<void>
   isLoading: boolean
   isUserDataLoading: boolean
 }
@@ -177,8 +179,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     if (!user) return
 
-    const refreshToken = await storage.getRefreshToken()
-
     try {
       await api.post(`auth/sign_out/${user.id}`)
       await destroyUserData()
@@ -219,6 +219,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
     return false
   }
 
+  async function sendForgotPasswordMail(email: string) {
+    setIsLoading(true)
+
+    try {
+      const {
+        data: { message },
+      } = await api.post<SendForgotPasswordMail>(
+        'auth/send_forgot_password_mail',
+        {
+          email,
+        }
+      )
+
+      toast.show({ type: 'success', message })
+    } catch (error) {
+      handleError(error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -227,6 +248,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         signIn,
         signOut,
         confirmEmail,
+        sendForgotPasswordMail,
         loadUserData,
         isLoading,
         isUserDataLoading,
