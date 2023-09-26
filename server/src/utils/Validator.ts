@@ -17,7 +17,7 @@ export class Validator {
     })
     .refine(
       (password) => this.passwordRegex.test(password),
-      'Senha está no formato incorreto'
+      'Senha no formato incorreto'
     )
 
   private nameSchema = z
