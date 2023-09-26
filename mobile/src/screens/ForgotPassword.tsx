@@ -1,9 +1,13 @@
-import { useEffect } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useAuth } from '../hooks/useAuth'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { useForm, Controller } from 'react-hook-form'
-import { forgotPasswordEmailSchema } from '../libs/zod'
-import { createURL } from 'expo-linking'
+import {
+  ForgotPasswordEmailFormData,
+  ResetPasswordFormData,
+  forgotPasswordEmailFormSchema,
+  resetPasswordFormSchema,
+} from '../libs/zod'
 
 import {
   Box,
@@ -11,6 +15,7 @@ import {
   Heading,
   Icon,
   Pressable,
+  VStack,
 } from '@gluestack-ui/themed'
 import { Input } from '../components/Input'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -22,29 +27,54 @@ type RouteParams = {
   passwordToken: string
 }
 
-type FormData = {
-  email: string
-}
-
 export function ForgotPassword() {
   const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>({
-    resolver: zodResolver(forgotPasswordEmailSchema),
+    control: emailControl,
+    handleSubmit: handleEmailSubmit,
+    reset: emailReset,
+    formState: { errors: emailErrors },
+  } = useForm<ForgotPasswordEmailFormData>({
+    resolver: zodResolver(forgotPasswordEmailFormSchema),
   })
 
-  const { sendForgotPasswordMail, isLoading } = useAuth()
+  const {
+    control: passwordControl,
+    handleSubmit: handlePasswordSubmit,
+    formState: { errors: passwordErrors },
+    reset: resetPasswordFields,
+  } = useForm<ResetPasswordFormData>({
+    resolver: zodResolver(resetPasswordFormSchema),
+  })
+
+  const { sendForgotPasswordMail, resetPassword, isLoading } = useAuth()
+
+  const [passwordToken, setPasswordToken] = useState('')
 
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
   const route = useRoute()
   const params = route.params as RouteParams
+  const email = useRef('')
 
-  const passwordResetUrl = createURL('password-reset')
-
-  async function handleSendForgotPasswordMail({ email }: FormData) {
+  async function handleSendForgotPasswordMail({
+    email,
+  }: ForgotPasswordEmailFormData) {
     await sendForgotPasswordMail(email)
+  }
+
+  async function handleResetPassword({
+    old_password,
+    new_password,
+    new_password_confirmation,
+  }: ResetPasswordFormData) {
+    const isSuccess = await resetPassword({
+      email: email.current,
+      old_password,
+      new_password,
+      new_password_confirmation,
+      passwordToken,
+    })
+
+    if (isSuccess) resetPasswordFields()
   }
 
   function handleBackToAuthScreen() {
@@ -52,7 +82,8 @@ export function ForgotPassword() {
   }
 
   function handlePasswordToken(token: string) {
-
+    emailReset()
+    setPasswordToken(token)
   }
 
   useEffect(() => {
@@ -73,31 +104,92 @@ export function ForgotPassword() {
       </Pressable>
       <Center flex={1} w="$full">
         <Heading color="$light100">
-          Insira seu e-mail para recuperar sua senha
+          {!passwordToken
+            ? 'Insira seu e-mail para recuperar sua senha'
+            : 'Insira e confirme sua nova senha'}
         </Heading>
-        <Box w="$full" mt={24}>
-          <Controller
-            control={control}
-            name="email"
-            render={({ field: { onChange, value } }) => (
-              <Input
-                type="email"
-                label="E-mail"
-                placeholder="seu e-mail"
-                value={value}
-                errorMessage={errors.email?.message}
-                onChange={onChange}
+        <VStack gap={12} w="$full" mt={24}>
+          {!passwordToken ? (
+            <Controller
+              control={emailControl}
+              name="email"
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  type="email"
+                  label="E-mail"
+                  placeholder="seu e-mail"
+                  value={value}
+                  errorMessage={emailErrors.email?.message}
+                  onChange={onChange}
+                />
+              )}
+            />
+          ) : (
+            <>
+              <Controller
+                control={passwordControl}
+                name="old_password"
+                render={({ field: { onChange, value } }) => (
+                  <Input
+                    type="password"
+                    label="Antiga Senha"
+                    placeholder="sua senha antiga"
+                    value={value}
+                    errorMessage={passwordErrors.old_password?.message}
+                    onChange={onChange}
+                  />
+                )}
               />
-            )}
-          />
-        </Box>
+
+              <Controller
+                control={passwordControl}
+                name="new_password"
+                render={({ field: { onChange, value } }) => (
+                  <Input
+                    type="password"
+                    label="Nova Senha"
+                    placeholder="sua senha nova"
+                    value={value}
+                    errorMessage={passwordErrors.new_password?.message}
+                    onChange={onChange}
+                  />
+                )}
+              />
+
+              <Controller
+                control={passwordControl}
+                name="new_password_confirmation"
+                render={({ field: { onChange, value } }) => (
+                  <Input
+                    type="password"
+                    label="Confirmação da nova senha"
+                    placeholder="confirme sua senha nova"
+                    value={value}
+                    errorMessage={
+                      passwordErrors.new_password_confirmation?.message
+                    }
+                    onChange={onChange}
+                  />
+                )}
+              />
+            </>
+          )}
+        </VStack>
 
         <Box mt={24} w="$full">
-          <Button
-            title="Enviar e-mail"
-            onPress={handleSubmit(handleSendForgotPasswordMail)}
-            isLoading={isLoading}
-          />
+          {!passwordToken ? (
+            <Button
+              title="Redefinir senha"
+              onPress={handleEmailSubmit(handleSendForgotPasswordMail)}
+              isLoading={isLoading}
+            />
+          ) : (
+            <Button
+              title="Redefinir senha"
+              onPress={handlePasswordSubmit(handleResetPassword)}
+              isLoading={isLoading}
+            />
+          )}
         </Box>
       </Center>
     </Box>

@@ -58,10 +58,7 @@ export function Auth() {
   }
 
   async function handleDeepLink({ url }: { url: string }) {
-    console.log(!url || !url.includes(emailConfirmationUrl))
-
     if (!url || !url.includes(emailConfirmationUrl)) {
-      toast.show({ type: 'error', message: 'Erro ao confirmar e-mail' })
       return
     }
 

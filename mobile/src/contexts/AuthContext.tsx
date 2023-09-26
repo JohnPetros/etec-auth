@@ -11,48 +11,58 @@ import { storage } from '../storage'
 
 import type {
   ConfirmEmailResponse,
-  SendForgotPasswordMail,
+  ResetPasswordResponse,
+  SendForgotPasswordMailResponse,
   SignInResponse,
   SignUpResponse,
 } from '../@types/authResponse'
 import type { User } from '../@types/user'
 
-export interface SignUpProps {
+export interface SignUpParams {
   name: string
   email: string
   password: string
   password_confirmation: string
 }
 
-interface SignInProps {
+interface SignInParams {
   email: string
   password: string
 }
 
-interface ConfirmEmailProps {
+interface ConfirmEmailParams {
   email: string
   emailToken: string
 }
 
+interface ResetPasswordParams {
+  email: string
+  old_password: string
+  new_password: string
+  new_password_confirmation: string
+  passwordToken: string
+}
+
 type AuthContextValue = {
   user: User | null
-  signUp: ({}: SignUpProps) => Promise<void>
-  signIn: ({}: SignInProps) => Promise<void>
+  signUp: ({}: SignUpParams) => Promise<void>
+  signIn: ({}: SignInParams) => Promise<void>
   signOut: () => Promise<void>
-  confirmEmail: ({ email, emailToken }: ConfirmEmailProps) => Promise<boolean>
-  loadUserData: () => void
+  confirmEmail: ({ email, emailToken }: ConfirmEmailParams) => Promise<boolean>
   sendForgotPasswordMail: (email: string) => Promise<void>
+  resetPassword: ({}: ResetPasswordParams) => Promise<boolean>
+  loadUserData: () => void
   isLoading: boolean
   isUserDataLoading: boolean
 }
 
-interface AuthProviderProps {
+interface AuthProviderParams {
   children: ReactNode
 }
 
 export const AuthContext = createContext({} as AuthContextValue)
 
-export function AuthProvider({ children }: AuthProviderProps) {
+export function AuthProvider({ children }: AuthProviderParams) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isUserDataLoading, setIsUserDataLoading] = useState(true)
@@ -125,7 +135,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     email,
     password,
     password_confirmation,
-  }: SignUpProps) {
+  }: SignUpParams) {
     setIsLoading(true)
 
     try {
@@ -148,7 +158,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-  async function signIn({ email, password }: SignInProps) {
+  async function signIn({ email, password }: SignInParams) {
     setIsLoading(true)
 
     try {
@@ -189,7 +199,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-  async function confirmEmail({ email, emailToken }: ConfirmEmailProps) {
+  async function confirmEmail({ email, emailToken }: ConfirmEmailParams) {
     setIsLoading(true)
 
     try {
@@ -225,16 +235,52 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const {
         data: { message },
-      } = await api.post<SendForgotPasswordMail>(
+      } = await api.post<SendForgotPasswordMailResponse>(
         'auth/send_forgot_password_mail',
         {
           email,
         }
       )
 
+      await storage.saveUserEmail(email)
       toast.show({ type: 'success', message })
     } catch (error) {
       handleError(error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  async function resetPassword({
+    old_password,
+    new_password,
+    new_password_confirmation,
+    passwordToken,
+  }: ResetPasswordParams) {
+    setIsLoading(true)
+
+    const email = await storage.getUserEmail()
+
+    try {
+      const {
+        data: { message },
+      } = await api.patch<ResetPasswordResponse>(
+        `auth/reset_password?password_token=${passwordToken}`,
+        {
+          email,
+          old_password,
+          new_password,
+          new_password_confirmation,
+        }
+      )
+
+      await storage.destroyUserEmail()
+      toast.show({ type: 'success', message })
+      return true
+    } catch (error) {
+      console.error(error)
+      handleError(error)
+      return false
     } finally {
       setIsLoading(false)
     }
@@ -249,6 +295,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         signOut,
         confirmEmail,
         sendForgotPasswordMail,
+        resetPassword,
         loadUserData,
         isLoading,
         isUserDataLoading,
