@@ -33,8 +33,4 @@ authRoutes.post(
   '/send_forgot_password_mail',
   sendForgotPasswordMailController.handle
 )
-authRoutes.patch(
-  '/reset_password/:user_id',
-  checkAuthentication,
-  resetPasswordController.handle
-)
+authRoutes.patch('/reset_password', resetPasswordController.handle)
