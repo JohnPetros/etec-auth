@@ -3,7 +3,7 @@ import { z } from 'zod'
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s])[A-Za-z\d\W\S]{6,}$/g
 
-const emailSchema = z
+export const emailSchema = z
   .string({
     required_error: 'Insira um e-mail',
   })
