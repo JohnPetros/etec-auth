@@ -1,61 +1,67 @@
-import { ITokensRepository } from '../../repositories/interfaces/ITokensRepository'
 import { IUsersRepository } from '../../repositories/interfaces/IUsersRepository'
 
 import { AppError } from '../../utils/AppError'
 import { Encryptor } from '../../utils/Encryptor'
+import { Jwt } from '../../utils/Jwt'
 import { Validator } from '../../utils/Validator'
 
-export class ResetPasswordUseCase {
-  constructor(
-    private tokensRepository: ITokensRepository,
-    private usersRepository: IUsersRepository
-  ) {}
+type Request = {
+  email: string
+  resetPasswordToken: string
+  oldPassword: string
+  newPassword: string
+  newPasswordConfirmation: string
+}
 
-  async execute(
-    resetPasswordTokenContent: string,
-    userId: string,
-    newPassword: string
-  ) {
-    if (!resetPasswordTokenContent) {
+export class ResetPasswordUseCase {
+  constructor(private usersRepository: IUsersRepository) {}
+
+  async execute({
+    email,
+    resetPasswordToken,
+    oldPassword,
+    newPassword,
+    newPasswordConfirmation,
+  }: Request) {
+    if (!resetPasswordToken) {
       throw new AppError('Token de redefinição de senha não fornecido', 400)
     }
 
-    const resetPasswordToken = await this.tokensRepository.findByContent(
-      resetPasswordTokenContent
-    )
+    console.log(email)
 
-    console.log({ resetPasswordToken })
+    const jwt = new Jwt()
 
-    if (!resetPasswordToken) {
-      throw new AppError(
-        'Token de redefinição de senha não fornecido ou expirado',
-        400
-      )
-    }
+    const passwordUserId = jwt.verifyPasswordToken(resetPasswordToken)
 
-    if (resetPasswordToken.user_id !== userId) {
-      throw new AppError('Usuário inválido', 401)
-    }
-
-    const user = await this.usersRepository.findById(userId)
+    const user = await this.usersRepository.findByEmail(email)
 
     if (!user) {
-      throw new AppError('Usuário não encontrado', 400)
+      throw new AppError('Usuário não encontrado', 401)
+    }
+
+    if (passwordUserId !== user.id) {
+      throw new AppError('Usuário não encontrado', 401)
     }
 
     const validator = new Validator()
 
-    validator.validatePassword(newPassword)
+    validator.validatePassword(oldPassword)
+
+    if (newPasswordConfirmation !== newPassword) {
+      throw new AppError('Senhas não conferem', 401)
+    }
 
     const encryptor = new Encryptor()
 
+    const passwordMatch = encryptor.compareHash(oldPassword, user.password)
+
+    if (!passwordMatch) {
+      throw new AppError('Usuário não encontrado', 401)
+    }
+
     user.password = await encryptor.generateHash(newPassword, 8)
 
-    console.log(user.password)
-
     await this.usersRepository.update({ password: user.password }, user.id)
-
-    await this.tokensRepository.deleteById(resetPasswordToken.id)
 
     return 'Senha alterada com sucesso'
   }
