@@ -31,12 +31,6 @@ export function Home() {
   const toast = useToast()
   const navigation = useNavigation<AppNavigatorRoutesProps>()
 
-  function getCourseTitle(courseId: string) {
-    return (
-      courses.find((course) => course.id === courseId)?.title ?? courseIcons
-    )
-  }
-
   function handleCourseButtonPress(courseId: string) {
     setSelectedCourseId(courseId)
   }
