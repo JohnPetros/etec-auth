@@ -1,3 +1,4 @@
+import { useCallback, useState } from 'react'
 import {
   useFocusEffect,
   useNavigation,
@@ -17,7 +18,6 @@ import {
 import { Header } from '../components/Header'
 import { ChevronLeft, AlignCenter } from 'lucide-react-native'
 import { Subject as SubjectData } from '../@types/subject'
-import { useCallback, useEffect, useState } from 'react'
 import { api } from '../services/api'
 import { Loading } from '../components/Loading'
 import { SvgUri } from 'react-native-svg'
