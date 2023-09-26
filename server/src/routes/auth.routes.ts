@@ -31,7 +31,6 @@ authRoutes.post('/refresh_token', refreshTokenController.handle)
 authRoutes.post('/confirm_email', confirmUserEmailController.handle)
 authRoutes.post(
   '/send_forgot_password_mail',
-  checkAuthentication,
   sendForgotPasswordMailController.handle
 )
 authRoutes.patch(
