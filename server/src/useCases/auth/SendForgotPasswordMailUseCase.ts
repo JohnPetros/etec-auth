@@ -7,6 +7,7 @@ import { AppError } from '../../utils/AppError'
 import { Time } from '../../utils/Time'
 import { TemplateEngine } from '../../utils/TemplateEngine'
 import { v4 as uuid } from 'uuid'
+import { Jwt } from '../../utils/Jwt'
 
 export class SendForgotPasswordMailUseCase {
   constructor(
@@ -23,20 +24,21 @@ export class SendForgotPasswordMailUseCase {
     const user = await this.usersRepository.findByEmail(email)
 
     if (!user) {
-      throw new AppError('Usuário não encontrado', 404)
+      throw new AppError('Usuário não encontrado', 401)
     }
 
-    const token = uuid()
+    const jwt = new Jwt()
 
-    const time = new Time()
+    const token = jwt.generatePasswordToken(user.id)
 
-    await this.tokensRepository.create({
-      content: token,
-      user_id: user.id,
-      expires_in: time.addHours(3),
-    })
+    if (!token) {
+      throw new AppError(
+        'Não foi possível criar token de redefinição de senha',
+        500
+      )
+    }
 
-    const baseUrl = process.env.BASE_URL
+    const baseUrl = process.env.PASSWORD_RESET_URL
 
     if (!baseUrl) {
       throw new AppError('Url para resetar a senha não registrado', 500)
