@@ -11,9 +11,9 @@ interface InputProps {
   type: 'email' | 'password' | 'text'
   label: string
   errorMessage: string | undefined
-  placeholder: string,
-  value: string,
-  onChange: (value: string) => void,
+  placeholder: string
+  value: string
+  onChange: (value: string) => void
 }
 
 export function Input({
@@ -29,7 +29,7 @@ export function Input({
       <FormControlLabel>
         <FormControlLabelText color="$light100">{label}</FormControlLabelText>
       </FormControlLabel>
-      <InputContainer h={48}>
+      <InputContainer h={48} >
         <InputField
           borderWidth={2}
           borderColor="$blue700"
