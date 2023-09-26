@@ -26,3 +26,8 @@ export type RefreshTokenResponse = {
   token: string
   refreshToken: string
 }
+
+export type SendForgotPasswordMail = {
+  message: string
+  errorMessage: string
+}
