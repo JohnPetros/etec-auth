@@ -5,9 +5,11 @@ import { AppError } from './AppError'
 export class Jwt {
   private readonly secretToken = authConfig.secretToken
   private readonly secretEmailToken = authConfig.secretEmailToken
+  private readonly secretPasswordToken = authConfig.secretPasswordToken
   private readonly secretRefreshToken = authConfig.secretRefreshToken
   public readonly tokenExpiresIn = authConfig.tokenExpiresIn
   public readonly emailTokenExpiresIn = authConfig.emailTokenExpiresIn
+  public readonly passwordTokenExpiresIn = authConfig.passwordTokenExpiresIn
   public readonly refreshTokenExpiresIn = authConfig.refreshTokenExpiresIn
   private readonly errors: Record<string, string> = {
     'jwt expired': 'expirado',
@@ -31,10 +33,21 @@ export class Jwt {
   }
 
   generateEmailToken(userId: string) {
-    if (this.secretRefreshToken) {
-      const refreshToken = sign({}, this.secretRefreshToken, {
+    if (this.secretEmailToken) {
+      const refreshToken = sign({}, this.secretEmailToken, {
         subject: userId,
-        expiresIn: `${this.refreshTokenExpiresIn}d`,
+        expiresIn: this.emailTokenExpiresIn,
+      })
+
+      return refreshToken
+    }
+  }
+
+  generatePasswordToken(userId: string) {
+    if (this.secretPasswordToken) {
+      const refreshToken = sign({}, this.secretPasswordToken, {
+        subject: userId,
+        expiresIn: this.passwordTokenExpiresIn,
       })
 
       return refreshToken
