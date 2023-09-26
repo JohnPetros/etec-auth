@@ -44,13 +44,13 @@ export const forgotPasswordEmailFormSchema = z.object({
 
 export const resetPasswordFormSchema = z
   .object({
-    old_passoword: passwordSchema,
+    old_password: passwordSchema,
     new_password: passwordSchema,
-    password_confirmation: passwordConfirmationSchema,
+    new_password_confirmation: passwordConfirmationSchema,
   })
   .refine(
-    ({ new_password, password_confirmation }) =>
-      new_password === password_confirmation,
+    ({ new_password, new_password_confirmation }) =>
+      new_password === new_password_confirmation,
     'Senhas não conferem'
   )
 
