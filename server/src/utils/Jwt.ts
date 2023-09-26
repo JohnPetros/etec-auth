@@ -87,6 +87,17 @@ export class Jwt {
     }
   }
 
+  verifyPasswordToken(token: string) {
+    if (this.secretPasswordToken) {
+      try {
+        const { sub } = verify(token, this.secretPasswordToken)
+        return String(sub)
+      } catch (error) {
+        this.handleVerificationError(error as Error, 'Token de redefinição de senha')
+      }
+    }
+  }
+
   verifyRefreshToken(refreshToken: string) {
     if (this.secretRefreshToken) {
       try {
