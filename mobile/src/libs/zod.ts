@@ -38,10 +38,21 @@ export const signUpFormSchema = z
     'Senhas não conferem'
   )
 
-  export const forgotPasswordEmailSchema =  z.object({
-    email: emailSchema,
-  })
+export const forgotPasswordEmailFormSchema = z.object({
+  email: emailSchema,
+})
 
+export const resetPasswordFormSchema = z
+  .object({
+    old_passoword: passwordSchema,
+    new_password: passwordSchema,
+    password_confirmation: passwordConfirmationSchema,
+  })
+  .refine(
+    ({ new_password, password_confirmation }) =>
+      new_password === password_confirmation,
+    'Senhas não conferem'
+  )
 
 export const signInFormSchema = z.object({
   email: emailSchema,
@@ -50,3 +61,7 @@ export const signInFormSchema = z.object({
 
 export type SignUpFormData = z.infer<typeof signUpFormSchema>
 export type SignInFormData = z.infer<typeof signInFormSchema>
+export type ResetPasswordFormData = z.infer<typeof resetPasswordFormSchema>
+export type ForgotPasswordEmailFormData = z.infer<
+  typeof forgotPasswordEmailFormSchema
+>
