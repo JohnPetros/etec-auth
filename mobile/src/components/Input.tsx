@@ -29,10 +29,8 @@ export function Input({
       <FormControlLabel>
         <FormControlLabelText color="$light100">{label}</FormControlLabelText>
       </FormControlLabel>
-      <InputContainer h={48} >
+      <InputContainer h={48}>
         <InputField
-          borderWidth={2}
-          borderColor="$blue700"
           placeholder={placeholder}
           placeholderTextColor="$blue900"
           fontSize="$md"
@@ -46,6 +44,10 @@ export function Input({
           sx={{
             ':invalid': {
               borderColor: '$red500',
+            },
+            ':focus': {
+              borderColor: '$blue400',
+              borderWidth: 3,
             },
           }}
         />
