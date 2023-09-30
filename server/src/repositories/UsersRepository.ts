@@ -58,13 +58,13 @@ export class UsersRepository implements IUsersRepository {
     }
   }
 
-  async update(new_data: Partial<User>, id: string): Promise<User | null> {
+  async updatePassword(password: string, id: string): Promise<User | null> {
     try {
-      await this.Repository.findOneAndUpdate({ _id: id }, { ...new_data })
+      await this.Repository.findOneAndUpdate({ _id: id }, { password })
 
       return await this.findById(id)
     } catch (error) {
-      throw new AppError('Erro ao tentar atualizar dados de usuário')
+      throw new AppError('Erro ao tentar atualizar senha de usuário')
     }
   }
 
