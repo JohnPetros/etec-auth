@@ -8,6 +8,7 @@ import { Validator } from '../../utils/Validator'
 import { Jwt } from '../../utils/Jwt'
 import { Encryptor } from '../../utils/Encryptor'
 import { Time } from '../../utils/Time'
+import { verifiyUserAuthAttempts } from '../../helpers/verifiyUserAuthAttempts'
 
 interface Request {
   email: string
@@ -37,11 +38,20 @@ export class SignInUserUseCase {
       throw new AppError('Usuário não encontrado', 404)
     }
 
+    const userAuthAttempts = await verifiyUserAuthAttempts(
+      user,
+      this.usersRepository
+    )
+
     const encryptor = new Encryptor()
 
     const passwordMatch = await encryptor.compareHash(password, user.password)
 
     if (!passwordMatch) {
+      await this.usersRepository.incrementAuthAttempts(
+        userAuthAttempts,
+        user.id
+      )
       throw new AppError('Usuário não encontrado', 404)
     }
 
@@ -50,6 +60,10 @@ export class SignInUserUseCase {
     const token = jwt.generateAuthToken(user.id)
 
     if (!token) {
+      await this.usersRepository.incrementAuthAttempts(
+        userAuthAttempts,
+        user.id
+      )
       throw new AppError('Erro ao criar token de autenticação', 500)
     }
 
@@ -62,6 +76,10 @@ export class SignInUserUseCase {
     const refreshToken = jwt.generateRefreshToken(user.id)
 
     if (!refreshToken) {
+      await this.usersRepository.incrementAuthAttempts(
+        userAuthAttempts,
+        user.id
+      )
       throw new AppError('Refresh token não pôde ser criado', 500)
     }
 

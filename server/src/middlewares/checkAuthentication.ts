@@ -2,7 +2,10 @@ import { NextFunction, Request, Response } from 'express'
 
 import { AppError } from '../utils/AppError'
 import { Jwt } from '../utils/Jwt'
+
 import { UsersRepository } from '../repositories/UsersRepository'
+
+import { verifiyUserAuthAttempts } from '../helpers/verifiyUserAuthAttempts'
 
 export async function checkAuthentication(
   request: Request,
@@ -35,6 +38,13 @@ export async function checkAuthentication(
 
   if (!user) {
     throw new AppError('Usuário não encontrado', 401)
+  }
+
+  const userAuthAttempts = await verifiyUserAuthAttempts(user, usersRepository)
+
+  if (!user.is_verified) {
+    await usersRepository.incrementAuthAttempts(userAuthAttempts, user.id)
+    throw new AppError('Usuário não verificado', 401)
   }
 
   next()

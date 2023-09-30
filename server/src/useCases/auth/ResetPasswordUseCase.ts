@@ -1,3 +1,5 @@
+import { handleAuthError } from '../../helpers/handleAuthError'
+import { verifiyUserAuthAttempts } from '../../helpers/verifiyUserAuthAttempts'
 import { IUsersRepository } from '../../repositories/interfaces/IUsersRepository'
 
 import { AppError } from '../../utils/AppError'
@@ -27,27 +29,58 @@ export class ResetPasswordUseCase {
       throw new AppError('Token de redefinição de senha não fornecido', 400)
     }
 
-    console.log(email)
-
-    const jwt = new Jwt()
-
-    const passwordUserId = jwt.verifyPasswordToken(resetPasswordToken)
-
     const user = await this.usersRepository.findByEmail(email)
 
     if (!user) {
       throw new AppError('Usuário não encontrado', 401)
     }
 
+    const userAuthAttempts = await verifiyUserAuthAttempts(
+      user,
+      this.usersRepository
+    )
+
+    const jwt = new Jwt()
+
+    let passwordUserId
+
+    try {
+      passwordUserId = jwt.verifyPasswordToken(resetPasswordToken)
+    } catch (error) {
+      handleAuthError({
+        userId: user.id,
+        userAuthAttempts,
+        usersRepository: this.usersRepository,
+        error: error as Error,
+      })
+    }
+
     if (passwordUserId !== user.id) {
+      await this.usersRepository.incrementAuthAttempts(
+        user.auth_attempts,
+        user.id
+      )
       throw new AppError('Usuário não encontrado', 401)
     }
 
     const validator = new Validator()
 
-    validator.validatePassword(oldPassword)
+    try {
+      validator.validatePassword(oldPassword)
+    } catch (error) {
+      handleAuthError({
+        userId: user.id,
+        userAuthAttempts,
+        usersRepository: this.usersRepository,
+        error: error as Error,
+      })
+    }
 
     if (newPasswordConfirmation !== newPassword) {
+      await this.usersRepository.incrementAuthAttempts(
+        user.auth_attempts,
+        user.id
+      )
       throw new AppError('Senhas não conferem', 401)
     }
 
@@ -56,6 +89,10 @@ export class ResetPasswordUseCase {
     const passwordMatch = encryptor.compareHash(oldPassword, user.password)
 
     if (!passwordMatch) {
+      await this.usersRepository.incrementAuthAttempts(
+        user.auth_attempts,
+        user.id
+      )
       throw new AppError('Usuário não encontrado', 401)
     }
 

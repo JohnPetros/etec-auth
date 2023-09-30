@@ -1,4 +1,3 @@
-import { ITokensRepository } from '../../repositories/interfaces/ITokensRepository'
 import { IUsersRepository } from '../../repositories/interfaces/IUsersRepository'
 import { IMailService } from '../../services/interfaces/IMailService'
 
@@ -6,11 +5,12 @@ import { Validator } from '../../utils/Validator'
 import { AppError } from '../../utils/AppError'
 import { TemplateEngine } from '../../utils/TemplateEngine'
 import { Jwt } from '../../utils/Jwt'
+import { Time } from '../../utils/Time'
+import { verifiyUserAuthAttempts } from '../../helpers/verifiyUserAuthAttempts'
 
 export class SendForgotPasswordMailUseCase {
   constructor(
     private usersRepository: IUsersRepository,
-    private tokensRepository: ITokensRepository,
     private mailService: IMailService
   ) {}
 
@@ -25,11 +25,28 @@ export class SendForgotPasswordMailUseCase {
       throw new AppError('Usuário não encontrado', 401)
     }
 
+    const userAuthAttempts = await verifiyUserAuthAttempts(
+      user,
+      this.usersRepository
+    )
+
+    if (!user.is_verified) {
+      await this.usersRepository.incrementAuthAttempts(
+        userAuthAttempts,
+        user.id
+      )
+      throw new AppError('Usuário não verificado', 401)
+    }
+
     const jwt = new Jwt()
 
     const token = jwt.generatePasswordToken(user.id)
 
     if (!token) {
+      await this.usersRepository.incrementAuthAttempts(
+        userAuthAttempts,
+        user.id
+      )
       throw new AppError(
         'Não foi possível criar token de redefinição de senha',
         500
@@ -39,6 +56,10 @@ export class SendForgotPasswordMailUseCase {
     const baseUrl = process.env.PASSWORD_RESET_URL
 
     if (!baseUrl) {
+      await this.usersRepository.incrementAuthAttempts(
+        userAuthAttempts,
+        user.id
+      )
       throw new AppError('Url para resetar a senha não registrado', 500)
     }
 
@@ -62,6 +83,10 @@ export class SendForgotPasswordMailUseCase {
         mailVariables
       )
     } catch (error) {
+      await this.usersRepository.incrementAuthAttempts(
+        userAuthAttempts,
+        user.id
+      )
       new AppError('Erro ao enviar e-mail para recuperar a senha', 500)
     }
 
