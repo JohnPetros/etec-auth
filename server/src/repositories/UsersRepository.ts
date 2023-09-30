@@ -26,6 +26,8 @@ export class UsersRepository implements IUsersRepository {
         name: user?.name,
         password: user?.password,
         is_verified: user?.is_verified,
+        auth_attempts: user.auth_attempts,
+        blocked_util: user.blocked_util,
       }
     } catch (error) {
       console.error(error)
@@ -47,6 +49,8 @@ export class UsersRepository implements IUsersRepository {
         name: user?.name,
         password: user?.password,
         is_verified: user?.is_verified,
+        auth_attempts: user?.auth_attempts,
+        blocked_util: user?.blocked_util,
       }
     } catch (error) {
       console.error(error)
@@ -79,5 +83,29 @@ export class UsersRepository implements IUsersRepository {
 
   async verifyUser(id: string): Promise<void> {
     await this.Repository.findOneAndUpdate({ _id: id }, { is_verified: true })
+  }
+
+  async blockUser(id: string, util_date: Date): Promise<void> {
+    await this.Repository.findOneAndUpdate(
+      { _id: id },
+      { blocked_util: util_date }
+    )
+  }
+  async unBlockUser(id: string): Promise<void> {
+    await this.Repository.findOneAndUpdate({ _id: id }, { blocked_util: null })
+  }
+
+  async resetAuthAttempts(id: string): Promise<void> {
+    await this.Repository.findOneAndUpdate({ _id: id }, { auth_attempts: 1 })
+  }
+
+  async incrementAuthAttempts(
+    currentAttempts: number,
+    id: string
+  ): Promise<void> {
+    await this.Repository.findOneAndUpdate(
+      { _id: id },
+      { auth_attempts: currentAttempts + 1 }
+    )
   }
 }
