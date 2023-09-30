@@ -35,7 +35,7 @@ export class SignInUserUseCase {
     const user = await this.usersRepository.findByEmail(email)
 
     if (!user) {
-      throw new AppError('Usuário não encontrado', 404)
+      throw new AppError('Usuário não encontrado', 401)
     }
 
     const userAuthAttempts = await verifiyUserAuthAttempts(
@@ -52,7 +52,7 @@ export class SignInUserUseCase {
         userAuthAttempts,
         user.id
       )
-      throw new AppError('Usuário não encontrado', 404)
+      throw new AppError('Usuário não encontrado', 401)
     }
 
     const jwt = new Jwt()
