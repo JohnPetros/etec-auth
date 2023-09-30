@@ -4,4 +4,6 @@ export interface User {
   email: string
   password: string
   is_verified: boolean
+  auth_attempts: number
+  blocked_util: null | Date
 }
