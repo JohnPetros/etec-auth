@@ -234,7 +234,7 @@ $ yarn expo start
 
 ## ⚙️ Deploy
 
-O deploy dessa aplicação foi realizada usando a plataforma da **[Render](https://dashboard.render.com/)**, o que implica dizer que você pode acessar aplicação funcionando acessando esse **[link](https://etec-auth-app.onrender.com/)**.
+O deploy da API da aplicação foi realizada usando a plataforma da **[Render](https://dashboard.render.com/)**, o que implica dizer que você pode acessar a API usando a URL base **[link](https://etec-auth.onrender.com/)**.
 
 ---
 
