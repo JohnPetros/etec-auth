@@ -19,19 +19,6 @@
 </div>
 <br>
 
-<p align="center">
- <a href="#-sobre-o-projeto">Sobre o Projeto</a> |
- <a href="#-demonstração">Demonstração</a> | 
- <a href="#-funcionalidades">Funcionalidades</a> | 
- <a href="#-práticas-de-acessibilidade-aplicadas">Práticas de acessibilidade aplicadas</a> | 
- <a href="#-deploy">Deploy</a> | 
- <a href="#-tecnologias">Tecnologias</a> | 
- <a href="#-como-rodar-a-aplicação">Como  rodar a aplicação?</a> | 
- <a href="#-como-contribuir">Como contribuir</a> | 
- <a href="#-layout">Layout</a> | 
- <a href="#-license">Licença</a>
-</p>
-
 ## 🖥️ Sobre o Projeto
 
 Esse é um projeto trata-se um aplicativo de autenticação de perfil, em que usuário se registrar e autenticar para ter acesso ao sistema, que no caso lista os cursos e suas respectivas disciplinas ofertados pela [Etec](https://www.vestibulinhoetec.com.br/unidades-cursos/) 
@@ -102,7 +89,7 @@ O objetivo para a construção desse projeto foi estudar e aplicar os conceitos 
 
 Este projeto foi desenvolvido usando as seguintes tecnologias:
 
-### 🗄️ Backend
+### 📟 Backend
 
 ✔️ **[NodeJs](https://nodejs.org/en)** Para executar JS no lado do servidor e prover os recursos e as funcionalidades principais da aplicação
 
@@ -177,7 +164,7 @@ PASSWORD_RESET_URL= # Url base para redirecionar o usuário ao aplicativo para r
 
 ```
 
-### Rodando a aplicação backend
+### 📟 Rodando a aplicação backend
 
 ```bash
 
@@ -217,7 +204,7 @@ RESET_PASSWORD_SLUG= # Identificador do deep link para redefinição de senha
 > Se estiver rodando localmente, o nome do host deve ser o endereço IP da sua máquina em vez de simplesmente localhost
 
 
-### Rodando a aplicação mobile
+### 📱 Rodando a aplicação mobile
 
 ```bash
 
@@ -229,6 +216,17 @@ $ yarn expo start
 ```
 
 > Abra a aplicação em um emulador de celular ou use o aplicativo expo go para rodar a aplicação mobile
+
+---
+
+ ## 🧪 Rodando os testes
+
+### 👁️‍🗨️ Testando no Insomnia
+Clique no botão abaixo para baixar importar o arquivo contendo os testes de requisição da API para o seu Insomnia
+
+[![Executar no Insomnia}](https://insomnia.rest/images/run.svg)](https://insomnia.rest/run/?label=Etec%20Auth&uri=https%3A%2F%2Fraw.githubusercontent.com%2FJohnPetros%2Fetec-auth%2Fmain%2FInsomnia_data.json)
+
+> Lembrando que você precisa ter o [Insomnia](https://insomnia.rest/) instalado na sua máquina
 
 ---
 
