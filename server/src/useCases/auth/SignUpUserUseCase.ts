@@ -50,7 +50,7 @@ export class SignUpUserUseCase {
     const userAlreadyExists = await this.usersRepository.findByEmail(email)
 
     if (userAlreadyExists) {
-      throw new AppError('E-mail já em uso', 409)
+      throw new AppError('E-mail já em uso', 401)
     }
 
     const encryptor = new Encryptor()
@@ -96,12 +96,12 @@ export class SignUpUserUseCase {
         'emailConfirmationMail.hbs'
       )
 
-      await this.mailService.send(
-        email,
-        'Confirmação de e-mail',
-        templatePath,
-        mailVariables
-      )
+      await this.mailService.send({
+        to: email,
+        subject: 'Confirmação de e-mail',
+        path: templatePath,
+        variables: mailVariables,
+      })
     } catch (error) {
       new AppError('Erro ao enviar e-mail de confirmação', 500)
     }
