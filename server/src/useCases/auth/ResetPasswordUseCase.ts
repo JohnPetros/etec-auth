@@ -98,7 +98,7 @@ export class ResetPasswordUseCase {
 
     user.password = await encryptor.generateHash(newPassword, 8)
 
-    await this.usersRepository.update({ password: user.password }, user.id)
+    await this.usersRepository.updatePassword(user.password, user.id)
 
     return 'Senha alterada com sucesso'
   }

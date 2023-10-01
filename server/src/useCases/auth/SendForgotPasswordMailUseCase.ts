@@ -5,7 +5,6 @@ import { Validator } from '../../utils/Validator'
 import { AppError } from '../../utils/AppError'
 import { TemplateEngine } from '../../utils/TemplateEngine'
 import { Jwt } from '../../utils/Jwt'
-import { Time } from '../../utils/Time'
 import { verifiyUserAuthAttempts } from '../../helpers/verifiyUserAuthAttempts'
 
 export class SendForgotPasswordMailUseCase {
