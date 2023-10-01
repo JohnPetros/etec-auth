@@ -1,6 +1,8 @@
+import { MessageDTO } from '../dtos/MessageDTO'
+import { IMailService } from './interfaces/IMailService'
+
 import { File } from '../utils/File'
 import { TemplateEngine } from '../utils/TemplateEngine'
-import { IMailService } from './interfaces/IMailService'
 import nodemailer, { Transporter } from 'nodemailer'
 
 export class MailService implements IMailService {
@@ -26,12 +28,7 @@ export class MailService implements IMailService {
       .catch((error) => console.error(error))
   }
 
-  async send(
-    to: string,
-    subject: string,
-    path: string,
-    variables: Record<string, string>
-  ): Promise<void> {
+  async send({ to, subject, path, variables }: MessageDTO): Promise<void> {
     if (this.client) {
       const file = new File()
 

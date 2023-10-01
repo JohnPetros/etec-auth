@@ -76,12 +76,12 @@ export class SendForgotPasswordMailUseCase {
         'forgotPasswordMail.hbs'
       )
 
-      await this.mailService.send(
-        email,
-        'Recuperação de senha',
-        templatePath,
-        mailVariables
-      )
+      await this.mailService.send({
+        to: email,
+        subject: 'Recuperação de senha',
+        path: templatePath,
+        variables: mailVariables,
+      })
     } catch (error) {
       await this.usersRepository.incrementAuthAttempts(
         userAuthAttempts,
