@@ -6,5 +6,5 @@ export const authConfig = {
   tokenExpiresIn: '30m',
   emailTokenExpiresIn: '5m',
   passwordTokenExpiresIn: '5m',
-  refreshTokenExpiresIn: 30,
+  refreshTokenExpiresIn: 7,
 }
