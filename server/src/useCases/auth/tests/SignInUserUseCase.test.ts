@@ -1,6 +1,7 @@
 import { TokensRepositoryInMemory } from '../../../repositories/in-memory/TokensRepositoryInMemory'
 import { UsersRepositoryInMemory } from '../../../repositories/in-memory/UsersRepositoryInMemory'
 import { AppError } from '../../../utils/AppError'
+import { Encryptor } from '../../../utils/Encryptor'
 import { SignInUserUseCase } from '../SignInUserUseCase'
 
 let usersRepositoryInMemory: UsersRepositoryInMemory
@@ -43,20 +44,26 @@ describe('SignIn User Use Case', () => {
   })
 
   it('should sign in a user', async () => {
+    const encryptor = new Encryptor()
+
+    const password = 'passwordJP77$'
+
+    const passwordHash = await encryptor.generateHash(password)
+
     const user = {
       name: 'John Doe',
       email: 'johndoe@email.com',
-      password: 'passwordJP77$',
+      password: passwordHash,
     }
     await usersRepositoryInMemory.create(user)
 
-    const response = await expect(
-      signInUserUseCase.execute({
-        email: user.email,
-        password: user.password,
-      })
-    )
+    const response = await signInUserUseCase.execute({
+      email: user.email,
+      password: password,
+    })
 
     expect(response).toHaveProperty('user')
+    expect(response).toHaveProperty('token')
+    expect(response).toHaveProperty('refreshToken')
   })
 })
