@@ -1,5 +1,4 @@
 import { Model, Schema, model } from 'mongoose'
-import normalize from 'normalize-mongoose'
 import { Subject } from '../entities/Subject'
 
 const SubjectSchema = new Schema<Subject>({
@@ -18,7 +17,6 @@ const SubjectSchema = new Schema<Subject>({
   },
 })
 
-SubjectSchema.plugin(normalize)
 
 SubjectSchema.set('toJSON', {
   transform: (_, returnedObject) => {

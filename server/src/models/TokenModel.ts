@@ -1,5 +1,4 @@
 import { Model, Schema, model } from 'mongoose'
-import normalize from 'normalize-mongoose'
 import { Token } from '../entities/Token'
 
 const TokenSchema = new Schema<Token>({
@@ -20,9 +19,8 @@ const TokenSchema = new Schema<Token>({
   },
 })
 
-TokenSchema.plugin(normalize)
 
-TokenSchema.set('toObject', {
+TokenSchema.set('toJSON', {
   transform: (_, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id

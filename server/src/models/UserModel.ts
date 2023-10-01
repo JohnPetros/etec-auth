@@ -1,6 +1,5 @@
 import { Model, Schema, model } from 'mongoose'
 import { User } from '../entities/User'
-import normalize from 'normalize-mongoose'
 
 const UserSchema = new Schema<User>({
   id: {
@@ -40,8 +39,6 @@ const UserSchema = new Schema<User>({
     private: true,
   },
 })
-
-UserSchema.plugin(normalize)
 
 UserSchema.set('toJSON', {
   transform: (_, returnedObject) => {

@@ -1,5 +1,4 @@
 import { Model, Schema, model } from 'mongoose'
-import normalize from 'normalize-mongoose'
 import { Course } from '../entities/Course'
 
 const CourseSchema = new Schema<Course>({
@@ -17,9 +16,7 @@ const CourseSchema = new Schema<Course>({
   },
 })
 
-CourseSchema.plugin(normalize)
-
-CourseSchema.set('toObject', {
+CourseSchema.set('toJSON', {
   transform: (_, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
