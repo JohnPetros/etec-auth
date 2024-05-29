@@ -138,12 +138,6 @@ export function AuthProvider({ children }: AuthProviderParams) {
   }: SignUpParams) {
     setIsLoading(true)
 
-    console.log({
-      name,
-      email,
-      password,
-      password_confirmation,
-    })
 
     try {
       const {

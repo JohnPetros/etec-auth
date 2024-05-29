@@ -10,10 +10,16 @@ type ApiData = {
   errorMessage: string
 }
 
-export const api = axios.create({ baseURL: API_URL })
+export const api = axios.create({ baseURL: "http://192.168.1.64:3333" })
 
 export const getApiErrorMessage = (error: unknown): string => {
-  return axios.isAxiosError(error) ? error.response?.data.errorMessage : error
+  console.error(error)
+
+  if (axios.isAxiosError(error) && error.status !== null) {
+    return error.response?.data.errorMessage
+  }
+
+  return String(error)
 }
 
 export const setAuthorizationHeader = (token: string) => {
@@ -62,6 +68,7 @@ api.interceptors.response.use(
     return response
   },
   (error: AxiosError) => {
+    console.error(JSON.stringify(error, null, 2))
     const { errorMessage } = error.response?.data as ApiData
     const originalErrorConfig = error.config
 
