@@ -47,6 +47,7 @@ export class SignUpUserUseCase {
       password_confirmation,
     })
 
+
     const userAlreadyExists = await this.usersRepository.findByEmail(email)
 
     if (userAlreadyExists) {
@@ -77,7 +78,8 @@ export class SignUpUserUseCase {
       expires_in: time.addHours(3),
     })
 
-    const url = process.env.EMAIL_CONFIRMATION_URL
+    // const url = process.env.EMAIL_CONFIRMATION_URL
+    const url = "etec-auth://email-confirmation"
 
     if (!url) {
       throw new AppError('Url confirmar e-mail não registrado', 500)
