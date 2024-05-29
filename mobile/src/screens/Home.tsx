@@ -65,8 +65,6 @@ export function Home() {
       const response = await api.get('subjects?course_id=' + selectedCourseId)
       const subjects = await response.data
 
-      console.log(subjects)
-
       setSubjects(subjects)
     } catch (error) {
       console.error(error)

@@ -31,12 +31,12 @@ export function Header() {
       pt={40}
       h={100}
     >
-      <Heading fontSize={32} color="$blue700">
+      <Heading fontSize={32} color="$blue800">
         Etec
       </Heading>
 
       <HStack gap={8} alignItems="center">
-        <Text color="$blue800" fontWeight="$bold" fontSize="$lg">
+        <Text color="$white" fontWeight="$semibold" fontSize="$lg">
           {user?.name}
         </Text>
         <TouchableOpacity onPress={handleSignOut}>
@@ -44,7 +44,7 @@ export function Header() {
             as={Ionicons}
             name="exit-outline"
             size={24}
-            color="$blue800"
+            color="$white"
             fontWeight="$bold"
           />
         </TouchableOpacity>

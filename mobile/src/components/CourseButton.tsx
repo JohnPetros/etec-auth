@@ -24,7 +24,7 @@ export function CourseButton({ title, isActive, onPress }: CourseButtonProps) {
     >
       <ButtonText
         fontWeight="$normal"
-        color={isActive ? '$blue900' : '$light100'}
+        color={isActive ? '$white' : '$light100'}
       >
         {title}
       </ButtonText>

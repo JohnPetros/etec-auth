@@ -82,7 +82,7 @@ export function Subject() {
             </HStack>
           </HStack>
 
-          <Heading color="$light100" mt={24} fontSize={24} fontWeight="bold">
+          <Heading color="$light100" mt={36} fontSize={24} fontWeight="bold">
             {subject.title}
           </Heading>
 
