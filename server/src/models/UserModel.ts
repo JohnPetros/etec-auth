@@ -35,7 +35,7 @@ const UserSchema = new Schema<User>({
   blocked_util: {
     type: Date,
     default: null,
-    required: true,
+    required: false,
     private: true,
   },
 })
