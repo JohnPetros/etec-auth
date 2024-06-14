@@ -30,8 +30,30 @@ O objetivo para a construção desse projeto foi estudar e aplicar os conceitos 
 <table align="center">
   <tr>
     <td align="center" width="700">
-    <span>Página da Urna funcionando<br/></span>
-    <img alt="Home page" src=".github/etec-auth-funcionando.gif" alt="Demonstração da urna funcionando" />
+        <span>Tela de Registro<br/></span>
+        <img src="documentation/images/signup.jpeg" height="320" alt="Tela de Registro" />
+    </td>
+    <td align="center" width="700">
+        <span>Tela de Login<br/></span>
+        <img src="documentation/images/signin.jpeg" height="320" alt="Tela de Login" />
+    </td>
+     <td align="center" width="700">
+        <span>Tela de Pedido de Redefinir Senha<br/></span>
+        <img src="documentation/images/request-password-reset.jpeg" height="320" alt="Tela de Pedido de Redefinição de Senha" />
+    </td>
+  </tr>
+  <tr>
+     <td align="center" width="700">
+        <span>Template de E-mail<br/></span>
+        <img src="documentation/images/email.jpeg" height="320" alt="Tela de E-mail" />
+    </td>
+    <td align="center" width="700" >
+        <span>Tela Home<br/></span>
+        <img src="documentation/images/home.jpeg" height="320" alt="Tela Home" />
+    </td>
+    <td align="center" width="700">
+        <span>Tela de Disciplina<br/></span>
+        <img src="documentation/images/subject.jpeg" height="320" alt="Tela de Disciplina" />
     </td>
   </tr>
 </table>
