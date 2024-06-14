@@ -31,29 +31,29 @@ O objetivo para a construção desse projeto foi estudar e aplicar os conceitos 
   <tr>
     <td align="center" width="700">
         <span>Tela de Registro<br/></span>
-        <img src="documentation/images/signup.jpeg" height="420" alt="Tela de Registro" />
+        <img src="documentation/images/signup.jpeg" width="320" height="420" alt="Tela de Registro" />
     </td>
     <td align="center" width="700">
         <span>Tela de Login<br/></span>
-        <img src="documentation/images/signin.jpeg" height="420" alt="Tela de Login" />
+        <img src="documentation/images/signin.jpeg" width="300" height="420" alt="Tela de Login" />
     </td>
      <td align="center" width="700">
         <span>Tela de Pedido de Redefinir Senha<br/></span>
-        <img src="documentation/images/request-password-reset.jpeg" height="420" alt="Tela de Pedido de Redefinição de Senha" />
+        <img src="documentation/images/request-password-reset.jpeg" width="300" height="420" alt="Tela de Pedido de Redefinição de Senha" />
     </td>
   </tr>
   <tr>
      <td align="center" width="700">
         <span>Template de E-mail<br/></span>
-        <img src="documentation/images/email.jpeg" height="420" alt="Tela de E-mail" />
+        <img src="documentation/images/email.jpeg" width="300" height="420" alt="Tela de E-mail" />
     </td>
     <td align="center" width="700" >
         <span>Tela Home<br/></span>
-        <img src="documentation/images/home.jpeg" height="420" alt="Tela Home" />
+        <img src="documentation/images/home.jpeg" width="300" height="420" alt="Tela Home" />
     </td>
     <td align="center" width="700">
         <span>Tela de Disciplina<br/></span>
-        <img src="documentation/images/subject.jpeg" height="420" alt="Tela de Disciplina" />
+        <img src="documentation/images/subject.jpeg" width="300" height="420" alt="Tela de Disciplina" />
     </td>
   </tr>
 </table>
