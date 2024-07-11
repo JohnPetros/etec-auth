@@ -113,27 +113,27 @@ Este projeto foi desenvolvido usando as seguintes tecnologias:
 
 ### 📟 Backend
 
-✔️ **[NodeJs](https://nodejs.org/en)** Para executar JS no lado do servidor e prover os recursos e as funcionalidades principais da aplicação
+- **[NodeJs](https://nodejs.org/en)** Para executar JS no lado do servidor e prover os recursos e as funcionalidades principais da aplicação
 
-✔️ **[Express](https://expressjs.com/pt-br/)** - framework minimalista para lidar e responder requisições HTTP
+- **[Express](https://expressjs.com/pt-br/)** - framework minimalista para lidar e responder requisições HTTP
 
-✔️ **[NodeMailer](https://nodemailer.com/)** - módulo de NodeJs para envio de e-mails
+- **[NodeMailer](https://nodemailer.com/)** - módulo de NodeJs para envio de e-mails
 
-✔️ **[MongoDb](https://www.mongodb.com/pt-br)** - banco de dados da aplicação
+- **[MongoDb](https://www.mongodb.com/pt-br)** - banco de dados da aplicação
 
-✔️ **[Mongoose](https://mongoosejs.com/)** - biblioteca de modelagem de dados para MongoDb e NodeJs
+- **[Mongoose](https://mongoosejs.com/)** - biblioteca de modelagem de dados para MongoDb e NodeJs
 
 ### 📱 Mobile
 
-✔️ **[React Native](https://reactnative.dev/)** - para desenvolver as telas do aplicativo de forma nativa
+- **[React Native](https://reactnative.dev/)** - para desenvolver as telas do aplicativo de forma nativa
 
-✔️ **[Expo](https://expo.dev/?utm_source=google&utm_medium=cpc&utm_content=performancemax&gclid=Cj0KCQjwjt-oBhDKARIsABVRB0xATpW5ntMoQ3KO_pAh64habJknUu1gNBU6pERGPhxMwIjDE_pSh80aAka6EALw_wcB)** - conjunto de ferramentas que visa facilitar o desenvolvimento utilizando React Native
+- **[Expo](https://expo.dev/?utm_source=google&utm_medium=cpc&utm_content=performancemax&gclid=Cj0KCQjwjt-oBhDKARIsABVRB0xATpW5ntMoQ3KO_pAh64habJknUu1gNBU6pERGPhxMwIjDE_pSh80aAka6EALw_wcB)** - conjunto de ferramentas que visa facilitar o desenvolvimento utilizando React Native
 
-✔️ **[Axios](https://ui.gluestack.io/)** - biblioteca de para realizar requisições HTTP
+- **[Axios](https://ui.gluestack.io/)** - biblioteca de para realizar requisições HTTP
 
-✔️ **[Gluestack Ui](https://ui.gluestack.io/)** - biblioteca de componentes visuais prontos e tokens de cores
+- **[Gluestack Ui](https://ui.gluestack.io/)** - biblioteca de componentes visuais prontos e tokens de cores
 
-✔️ **[Lucide React Native](https://lucide.dev/guide/packages/lucide-react-native)** - Biblioteca de ícones para aplicações React Native
+- **[Lucide React Native](https://lucide.dev/guide/packages/lucide-react-native)** - Biblioteca de ícones para aplicações React Native
 
 > Para mais detalhes acerca das dependências do projeto veja o arquivo [package.json](https://github.com/JohnPetros/etec-auth/blob/main/package.json)
 
